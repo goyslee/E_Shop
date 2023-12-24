@@ -19,7 +19,8 @@ const LoginPage = ({ onLogin }) => {
         const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
         if (response.status === 200) {
             onLogin({ name: response.data.user.name });
-            navigate('/products');
+          navigate('/products');
+          console.log('Successfully logged in')
         } else {
             console.error('Login failed:', response.data.message);
         }
