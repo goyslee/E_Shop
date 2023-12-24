@@ -55,6 +55,15 @@ app.get('/', (req, res) => {
   res.send('Hello, this is the E-commerce API!');
 });
 
+app.get('/check-auth', (req, res) => {
+    if (req.isAuthenticated()) {
+        res.json({ isAuthenticated: true, user: { name: req.user.name } });
+    } else {
+        res.json({ isAuthenticated: false });
+    }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

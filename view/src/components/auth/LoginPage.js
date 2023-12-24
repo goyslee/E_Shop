@@ -1,12 +1,12 @@
+// LoginPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './LoginPage.css';
 
-const LoginPage = () => {
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: ''
-  });
+
+const LoginPage = ({ onLogin }) => {
+  const [credentials, setCredentials] = useState({ email: '', password: '', username: '' });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,20 +16,23 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
-      console.log(response.data);
-      // Handle login success (e.g., storing the token, navigating to a different page)
-      navigate('/products'); // Redirect to products page or another page as needed
+        const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
+        if (response.status === 200) {
+            onLogin({ name: response.data.user.name });
+            navigate('/products');
+        } else {
+            console.error('Login failed:', response.data.message);
+        }
     } catch (error) {
-      console.error('Login error:', error);
-      // Handle login failure (e.g., displaying an error message)
+        console.error('Login error:', error.response.data.message);
     }
-  };
+};
+
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         <input
           type="email"
           name="email"

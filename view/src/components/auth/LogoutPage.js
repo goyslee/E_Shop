@@ -1,41 +1,34 @@
-//view\src\components\auth\LogoutPage.js
-import React, { useState } from 'react';
-import axios from 'axios';
+// LogoutPage.js
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './LogoutPage.css';
 
-const LogoutButton = () => {
-  const [errorMessage, setErrorMessage] = useState('');
+const LogoutPage = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    axios.post('http://localhost:3000/logout', {}, { withCredentials: true })
-      .then(response => {
-        console.log('Logout successful:', response.data);
-        // Redirect to login page or handle UI update
-        navigate('/login');
-      })
-      .catch(error => {
-        console.error('Logout error:', error);
-        // Set an error message to display to the user
-        if (error.response) {
-          // If the server responded with a status other than 2xx
-          setErrorMessage(`Error: ${error.response.status} - ${error.response.data}`);
-        } else if (error.request) {
-          // If the request was made but no response was received
-          setErrorMessage('No response from server');
+ const handleLogout = async () => {
+    try {
+        const response = await axios.post('http://localhost:3000/logout', {}, { withCredentials: true });
+        if (response.status === 200) {
+            onLogout();
+          navigate('/login');
+          console.log('Successfully logged out!')
         } else {
-          // Something else happened in setting up the request
-          setErrorMessage('Error in sending request');
+            console.error('Logout failed:', response.data.message);
         }
-      });
-  };
-
-  return (
-    <div>
-      <button onClick={handleLogout}>Logout</button>
-      {errorMessage && <p>{errorMessage}</p>}
-    </div>
-  );
+    } catch (error) {
+        console.error('Logout error:', error.response.data.message);
+    }
 };
 
-export default LogoutButton;
+
+  return (
+  <div className="logout-container">
+    <h2>Are you sure you want to logout?</h2>
+    <button onClick={handleLogout} className="logout-button">Logout</button>
+  </div>
+);
+};
+
+export default LogoutPage;

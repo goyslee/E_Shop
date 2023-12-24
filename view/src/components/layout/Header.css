@@ -1,0 +1,65 @@
+/* view/src/components/layout/Header.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #333;
+  color: #f8f8f8;
+}
+
+.navbar-nav {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav li {
+  margin-right: 1rem;
+}
+
+.navbar-nav a {
+  color: #f8f8f8;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+}
+
+.navbar-nav a:hover {
+  background-color: #555;
+}
+
+.login-section {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-text {
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  color: #e2e2e2;
+}
+
+.navbar-text svg {
+  margin-right: 0.5rem;
+}
+
+.login-button, .logout-button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.login-button:hover, .logout-button:hover {
+  background-color: #555;
+  color: #ffffff;
+}
+
+.nav-link {
+  color: #ffffff;
+  text-decoration: none;
+}

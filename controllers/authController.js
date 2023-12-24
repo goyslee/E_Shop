@@ -52,12 +52,12 @@ const login = (passport) => (req, res, next) => {
         if (!user) {
             return res.status(401).send('Authentication failed');
         }
-        req.login(user, (loginErr) => {
-            if (loginErr) {
-                return next(loginErr);
-            }
-            return res.status(200).send('Authentication successful');
-        });
+       req.login(user, (loginErr) => {
+    if (loginErr) {
+        return next(loginErr);
+    }
+    return res.status(200).json({ message: 'Authentication successful', user: { name: user.name, email: user.email } });
+});
     })(req, res, next);
 };
 
@@ -66,12 +66,12 @@ const logout = (req, res, next) => {
         return res.status(400).send('No user to log out.');
     }
 
-    req.logout((err) => {
-        if (err) { 
-            return res.status(500).send('Logout failed');
-        }
-        res.send('Logged out successfully');
-    });
+   req.logout((err) => {
+    if (err) { 
+        return res.status(500).json({ message: 'Logout failed' });
+    }
+    res.status(200).json({ message: 'Logged out successfully' });
+});
 };
 
 
