@@ -1,0 +1,77 @@
+/* RegisterPage.css */
+.register-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-form input {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.register-form button {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #0056b3; /* Example blue color */
+  color: white;
+  cursor: pointer;
+}
+
+.register-form button:hover {
+  background-color: #004494; /* Darker shade for hover */
+}
+
+
+.google-auth-button {
+  display: block;
+  padding: 0.6rem;
+  margin-top: 1rem;
+  text-align: center;
+  background-color: #db4437; /* Google's red color */
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-auth-button:hover {
+  background-color: #c1351d; /* A darker shade for hover effect */
+}
+
+
+/* .register-form a {
+  margin-top: 1rem;
+  text-align: center;
+  text-decoration: none;
+} */
+
+.login-link-button {
+  display: block;
+  padding: 0.6rem 1rem;
+  margin-top: 1rem;
+  background-color: #333; /* Example button color, adjust as needed */
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-link-button:hover {
+  background-color: black; /* Darker shade for hover */
+  color: white;
+}

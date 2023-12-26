@@ -39,3 +39,27 @@
   color: #0056b3;
   text-decoration: none;
 }
+
+.google-login-button {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.google-login-button a {
+  display: block;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #db4437; /* Google's red color */
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.google-login-button a:hover {
+  background-color: #c1351d; /* A darker shade for hover effect */
+}
+
+

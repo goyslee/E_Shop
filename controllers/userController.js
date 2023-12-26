@@ -1,3 +1,5 @@
+
+//controllers\userController.js
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const pool = require('../config/dbConfig'); // Adjusted path

@@ -52,6 +52,11 @@ const LoginPage = ({ onLogin }) => {
         />
         <button type="submit">Login</button>
       </form>
+     <div className="google-login-button">
+      <a href="http://localhost:3000/auth/google">
+        <span>Login with Google</span>
+      </a>
+    </div>
       <p>
         Don't have an account? <a href="/register">Register</a>
       </p>

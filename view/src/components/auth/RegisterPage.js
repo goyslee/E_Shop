@@ -1,6 +1,8 @@
+//view\src\components\auth\RegisterPage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './RegisterPage.css'; // Make sure you have this CSS file created
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -19,21 +21,18 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Replace '/api/register' with your actual API endpoint
       const response = await axios.post('http://localhost:3000/register', formData);
       console.log(response.data);
-      // Redirect to login page after successful registration
       navigate('/login');
     } catch (error) {
       console.error('Registration error:', error);
-      // Handle errors here, such as displaying a notification to the user
     }
   };
 
   return (
-    <div>
+    <div className="register-container">
       <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="register-form">
         <input
           type="text"
           name="name"
@@ -75,10 +74,18 @@ const RegisterPage = () => {
           required
         />
         <button type="submit">Register</button>
+         <a href="http://localhost:3000/auth/google" className="google-auth-button">
+          Register with Google
+        </a>
+         <h3>
+            Already have an account? 
+          </h3>
+          <p>
+           <a href="/login" className="login-link-button">Login</a>
+          </p>
+        
       </form>
-      <p>
-        Already have an account? <a href="/login">Login</a>
-      </p>
+         
     </div>
   );
 };

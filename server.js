@@ -1,3 +1,4 @@
+//server.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -63,6 +64,16 @@ app.get('/check-auth', (req, res) => {
     }
 });
 
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('http://localhost:3001/products'); // Redirect after successful authentication
+});
+
+// Facebook OAuth routes
+// app.get('/auth/facebook', passport.authenticate('facebook'));
+// app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/login' }), (req, res) => {
+//     res.redirect('/'); // Redirect after successful authentication
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

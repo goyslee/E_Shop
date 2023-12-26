@@ -1,6 +1,14 @@
+// controllers/authController.js
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// const FacebookStrategy = require('passport-facebook').Strategy;
 const bcrypt = require('bcrypt');
-const pool = require('../config/dbConfig'); // Adjust the path as needed
+const pool = require('../config/dbConfig');
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+// const FACEBOOK_APP_ID = 'Your-Facebook-App-ID';
+// const FACEBOOK_APP_SECRET = 'Your-Facebook-App-Secret';
 
 const initializePassport = (passport) => {
     passport.use(new LocalStrategy(
@@ -26,18 +34,68 @@ const initializePassport = (passport) => {
         }
     ));
 
-    passport.serializeUser((user, done) => {
-        done(null, user.userid);
-    });
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: '/auth/google/callback'
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      const email = profile.emails[0].value;
+      let user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
 
-    passport.deserializeUser((userid, done) => {
-        pool.query('SELECT * FROM Users WHERE userid = $1', [userid], (err, results) => {
-            if (err) {
-                return done(err);
-            }
-            done(null, results.rows[0]);
-        });
-    });
+      if (!user) {
+        // User does not exist, create a new user
+        user = (await pool.query(
+          'INSERT INTO Users (name, email, refresh_token, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+          [profile.displayName, email, refreshToken, null, null, null]
+        )).rows[0];
+      }
+      console.log('User:', email, 'Already exits, logging in... done')
+      return done(null, user);
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
+
+
+    // passport.use(new FacebookStrategy({
+    //     clientID: process.env.FACEBOOK_APP_ID,
+    //     clientSecret: process.env.FACEBOOK_APP_SECRET,
+    //     callbackURL: '/auth/facebook/callback',
+    //     profileFields: ['id', 'emails', 'name']
+    // },
+    // async (accessToken, refreshToken, profile, done) => {
+    //     const email = profile.emails[0].value;
+    //     const user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
+
+    //     if (user) {
+    //         return done(null, user);
+    //     } else {
+    //         // Create new user with Facebook profile info
+    //         const newUser = (await pool.query(
+    //             'INSERT INTO Users (name, email, refresh_token) VALUES ($1, $2, $3) RETURNING *',
+    //             [`${profile.name.givenName} ${profile.name.familyName}`, email, profile.id]
+    //         )).rows[0];
+
+    //         return done(null, newUser);
+    //     }
+    // }));
+
+   passport.serializeUser((user, done) => {
+  done(null, user.userid);
+});
+
+passport.deserializeUser((userid, done) => {
+  pool.query('SELECT * FROM Users WHERE userid = $1', [userid], (err, results) => {
+    if (err) {
+      return done(err);
+    }
+    done(null, results.rows[0]);
+  });
+});
+
 };
 
 const login = (passport) => (req, res, next) => {
@@ -52,12 +110,12 @@ const login = (passport) => (req, res, next) => {
         if (!user) {
             return res.status(401).send('Authentication failed');
         }
-       req.login(user, (loginErr) => {
-    if (loginErr) {
-        return next(loginErr);
-    }
-    return res.status(200).json({ message: 'Authentication successful', user: { name: user.name, email: user.email } });
-});
+        req.login(user, (loginErr) => {
+            if (loginErr) {
+                return next(loginErr);
+            }
+            return res.status(200).json({ message: 'Authentication successful', user: { name: user.name, email: user.email } });
+        });
     })(req, res, next);
 };
 
@@ -66,20 +124,17 @@ const logout = (req, res, next) => {
         return res.status(400).send('No user to log out.');
     }
 
-   req.logout((err) => {
-    if (err) { 
-        return res.status(500).json({ message: 'Logout failed' });
-    }
-    res.status(200).json({ message: 'Logged out successfully' });
-});
+    req.logout((err) => {
+        if (err) { 
+            return res.status(500).json({ message: 'Logout failed' });
+        }
+        res.status(200).json({ message: 'Logged out successfully' });
+    });
 };
 
-
-
-
 const logoutPage = (req, res) => {
-    res.send('logout page')
-}
+    res.send('logout page');
+};
 
 module.exports = {
     initializePassport,
