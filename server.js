@@ -1,6 +1,5 @@
 //server.js
 const express = require('express');
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -16,6 +15,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authController = require('./controllers/authController');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,6 +30,8 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json({ limit: '10mb' }));
+app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
   console.log("Incoming Request Body:", req.body);
@@ -66,8 +68,62 @@ app.get('/check-auth', (req, res) => {
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-    res.redirect('http://localhost:3001/products'); // Redirect after successful authentication
+  if (req.user && req.user.address) {
+    res.redirect('http://localhost:3001/products');
+  } else {
+    res.redirect(`http://localhost:3001/profilecompletion/${req.user.userid}`);
+  }
 });
+
+app.get('/profilecompletion', (req, res) => {
+  const html = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Profile Completion</title>
+        <!-- Add your head content here -->
+      </head>
+      <body>
+        <div id="root"></div>
+        <!-- Include your client-side scripts here -->
+        <!-- <script src="/server-bundle.js"></script> -->
+        <!-- <script src="/client-bundle.js"></script> -->
+        <script>
+          // JavaScript code to render the ProfileCompletion component on the client-side
+          // This code should be included in your client-side scripts
+          // Example:
+           const rootElement = document.getElementById('root');
+           ReactDOM.render(<ProfileCompletion />, rootElement);
+        </script>
+      </body>
+    </html>
+  `;
+
+  res.status(200).send(html);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.post('/update-user-details', (req, res) => {
+  const { userId, address, phonenumber } = req.body;
+  
+  // Update user details in the database
+  pool.query(
+    'UPDATE Users SET address = $1, phonenumber = $2 WHERE userid = $3',
+    [address, phonenumber, userId],
+    (error, results) => {
+      if (error) {
+        res.status(500).send('Error updating user details');
+      } else {
+        res.status(200).send('User details updated successfully');
+      }
+    }
+  );
+});
+
+
 
 // Facebook OAuth routes
 // app.get('/auth/facebook', passport.authenticate('facebook'));

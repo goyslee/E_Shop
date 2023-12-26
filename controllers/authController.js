@@ -39,19 +39,18 @@ passport.use(new GoogleStrategy({
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/google/callback'
   },
-  async (accessToken, refreshToken, profile, done) => {
+ async (accessToken, refreshToken, profile, done) => {
     try {
       const email = profile.emails[0].value;
       let user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
 
-      if (!user) {
-        // User does not exist, create a new user
-        user = (await pool.query(
-          'INSERT INTO Users (name, email, refresh_token, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-          [profile.displayName, email, refreshToken, null, null, null]
-        )).rows[0];
-      }
-      console.log('User:', email, 'Already exits, logging in... done')
+        if (!user) {
+            // User does not exist, create a new user
+            user = (await pool.query(
+                'INSERT INTO Users (name, email, refresh_token, phonenumber, address) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                [profile.displayName, email, refreshToken, null, null]
+            )).rows[0];
+        }
       return done(null, user);
     } catch (error) {
       return done(error);
