@@ -63,3 +63,9 @@
   color: #ffffff;
   text-decoration: none;
 }
+
+/* Add this CSS to position the cart link */
+.navbar-nav {
+  flex: 1; /* Take up the available space */
+  justify-content: flex-end; /* Align items to the right */
+}

@@ -1,0 +1,23 @@
+/* CartQuantityButton.css */
+
+
+
+.cart-quantity-button button {
+    background-color: #fff;
+    color: #333;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.cart-quantity-button button:hover {
+    background-color: #eaeaea;
+}
+
+.cart-quantity-button span {
+    padding: 5px 10px;
+    font-size: 16px;
+    color: #333;
+}

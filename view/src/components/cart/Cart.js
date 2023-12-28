@@ -1,7 +1,86 @@
-import React from 'react'
+// Cart.js
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import CartQuantityButton from './CartQuantityButton'; // Ensure the path is correct
+import AuthCheck from '../auth/AuthCheck';
+import './Cart.css'; // Ensure the path is correct
 
-export default function Cart() {
+const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/cart', { withCredentials: true });
+        setCartItems(response.data.cartItems);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchCartItems();
+    }
+  }, [isAuthenticated]);
+
+  const handleSubmitOrder = () => {
+    console.log('Order submitted');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div>
+        <AuthCheck setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} />
+        <p>Please log in to view your cart.</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div>Cart</div>
-  )
-}
+    <div className="cart-container">
+      <AuthCheck setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} />
+      {isAuthenticated ? (
+        <>
+          <h2 className="cart-header">Your Cart</h2>
+          <h3 className="cart-header">Welcome, {username}</h3>
+          {cartItems.length === 0 ? (
+            <p>Your cart is empty</p>
+          ) : (
+            <ul className="cart-item-list">
+              {cartItems.map((item) => (
+                <li key={item.productid} className="cart-item">
+                  <img src={item.image_url} alt={item.name} className="cart-item-image" />
+                  <div className="cart-item-details">
+                    <span className="cart-item-name">{item.name}</span>
+                    <span className="cart-item-price">${item.price}</span>
+                    <span className="cart-item-quantity">({item.quantity})</span>
+                    <CartQuantityButton userid={username} productid={item.productid} />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          <button className="submit-button" onClick={handleSubmitOrder}>Submit Order</button>
+        </>
+      ) : (
+        <p>Please log in to view your cart.</p>
+      )}
+    </div>
+  );
+};
+
+export default Cart;

@@ -34,28 +34,27 @@ const initializePassport = (passport) => {
         }
     ));
 
-passport.use(new GoogleStrategy({
-    clientID: GOOGLE_CLIENT_ID,
-    clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: '/auth/google/callback'
-  },
- async (accessToken, refreshToken, profile, done) => {
-    try {
-      const email = profile.emails[0].value;
-      let user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
+    passport.use(new GoogleStrategy({
+        clientID: GOOGLE_CLIENT_ID,
+        clientSecret: GOOGLE_CLIENT_SECRET,
+        callbackURL: '/auth/google/callback'
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const email = profile.emails[0].value;
+          let user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
 
-        if (!user) {
-            // User does not exist, create a new user
-            user = (await pool.query(
-                'INSERT INTO Users (name, email, refresh_token, phonenumber, address) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-                [profile.displayName, email, refreshToken, null, null]
-            )).rows[0];
+            if (!user) {
+                user = (await pool.query(
+                    'INSERT INTO Users (name, email, refresh_token, phonenumber, address) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+                    [profile.displayName, email, refreshToken, null, null]
+                )).rows[0];
+            }
+          return done(null, user);
+        } catch (error) {
+          return done(error);
         }
-      return done(null, user);
-    } catch (error) {
-      return done(error);
-    }
-  }));
+      }));
 
 
 

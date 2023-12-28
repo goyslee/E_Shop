@@ -10,7 +10,6 @@ const Header = ({ isAuthenticated, username }) => {
       <nav>
         <ul className="navbar-nav">
           <li><NavLink to="/products">Products</NavLink></li>
-          <li><NavLink to="/cart">Cart</NavLink></li>
           {/* Other navigation links */}
         </ul>
       </nav>
@@ -22,6 +21,7 @@ const Header = ({ isAuthenticated, username }) => {
             <span className="navbar-text">
               <FaUser /> {username}
             </span>
+            <NavLink to="/cart" className="nav-link">Cart</NavLink> {/* Place the cart link here */}
             <NavLink to="/logout" className="logout-button">Logout</NavLink>
           </>
         )}
