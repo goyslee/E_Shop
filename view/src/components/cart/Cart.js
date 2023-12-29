@@ -1,9 +1,9 @@
 // Cart.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import CartQuantityButton from './CartQuantityButton'; // Ensure the path is correct
+import CartQuantityButton from './CartQuantityButton';
 import AuthCheck from '../auth/AuthCheck';
-import './Cart.css'; // Ensure the path is correct
+import './Cart.css';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -29,9 +29,19 @@ const Cart = () => {
     }
   }, [isAuthenticated]);
 
-  const handleSubmitOrder = () => {
-    console.log('Order submitted');
+  const handleQuantityChange = (productId, newQuantity) => {
+    // Update the quantity of the item in the cartItems state
+    setCartItems((prevCartItems) =>
+      prevCartItems.map((item) =>
+        item.productid === productId ? { ...item, quantity: newQuantity } : item
+      )
+    );
   };
+
+  const handleSubmitOrder = () => {
+  console.log('Order submitted');
+};
+
 
   if (!isAuthenticated) {
     return (
@@ -67,14 +77,20 @@ const Cart = () => {
                   <div className="cart-item-details">
                     <span className="cart-item-name">{item.name}</span>
                     <span className="cart-item-price">${item.price}</span>
-                    <span className="cart-item-quantity">({item.quantity})</span>
-                    <CartQuantityButton userid={username} productid={item.productid} />
+                    <CartQuantityButton
+                      userid={username}
+                      productid={item.productid}
+                      initialQuantity={item.quantity}
+                      onQuantityChange={handleQuantityChange} // Pass the handler
+                    />
                   </div>
                 </li>
               ))}
             </ul>
           )}
-          <button className="submit-button" onClick={handleSubmitOrder}>Submit Order</button>
+          <button className="submit-button" onClick={handleSubmitOrder}>
+            Submit Order
+          </button>
         </>
       ) : (
         <p>Please log in to view your cart.</p>

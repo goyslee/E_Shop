@@ -12,9 +12,9 @@ const showCart = async (req, res) => {
         }
         const cartId = cartRes.rows[0].cartid;
 
-        // Fetch the items in the user's cart along with image_url
+        // Fetch the items in the user's cart along with image_url and include productid
         const cartItemsQuery = await pool.query(`
-            SELECT p.name, ci.quantity, p.price, p.image_url, (ci.quantity * p.price) as itemTotalPrice
+            SELECT p.productid, p.name, ci.quantity, p.price, p.image_url, (ci.quantity * p.price) as itemTotalPrice
             FROM cartitems ci
             JOIN Products p ON ci.productid = p.productid
             WHERE ci.cartid = $1
@@ -28,6 +28,7 @@ const showCart = async (req, res) => {
         res.status(500).send(err.message);
     }
 };
+
 
 const addItemToCart = async (req, res) => {
     const userId = req.user.userid;
