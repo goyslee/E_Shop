@@ -1,6 +1,8 @@
 // App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './store/store';
 import axios from 'axios';
 
 // Auth Components
@@ -61,22 +63,24 @@ function App() {
   };
 
   return (
-    <Router>
-      <Header isAuthenticated={isAuthenticated} username={username} />
-      <Routes>
-        <Route path="/" element={<ProductsList />} />
-        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-        <Route path="/logout" element={<LogoutPage onLogout={handleLogout} />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/products" element={<ProductsList />} />
-        <Route path="/product/:productid" element={<ProductDetailsPage userid={userId} />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-history" element={<OrderHistory />} />
-        <Route path="/user-profile" element={<UserProfile />} />
-        <Route path="/profilecompletion/:userid" element={<ProfileCompletion />} />
-      </Routes>
-    </Router>
+     <Provider store={store}>
+      <Router>
+        <Header isAuthenticated={isAuthenticated} username={username} />
+        <Routes>
+          <Route path="/" element={<ProductsList />} />
+          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+          <Route path="/logout" element={<LogoutPage onLogout={handleLogout} />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/products" element={<ProductsList />} />
+          <Route path="/product/:productid" element={<ProductDetailsPage userid={userId} />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-history" element={<OrderHistory />} />
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/profilecompletion/:userid" element={<ProfileCompletion />} />
+        </Routes>
+        </Router>
+      </Provider>
   );
 }
 

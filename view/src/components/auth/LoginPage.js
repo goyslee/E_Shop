@@ -1,12 +1,14 @@
 // LoginPage.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../../store/actions/authActions';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 
-
-const LoginPage = ({ onLogin }) => {
-  const [credentials, setCredentials] = useState({ email: '', password: '', username: '' });
+const LoginPage = () => {
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,19 +18,18 @@ const LoginPage = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
-        if (response.status === 200) {
-            onLogin({ name: response.data.user.name });
-          navigate('/products');
-          console.log('Successfully logged in')
-        } else {
-            console.error('Login failed:', response.data.message);
-        }
+      const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
+      if (response.status === 200) {
+        dispatch(loginSuccess(response.data.user.name));
+        navigate('/products');
+        console.log('Successfully logged in');
+      } else {
+        console.error('Login failed:', response.data.message);
+      }
     } catch (error) {
-        console.error('Login error:', error.response.data.message);
+      console.error('Login error:', error.response.data.message);
     }
-};
-
+  };
 
   return (
     <div className="login-container">
@@ -52,11 +53,11 @@ const LoginPage = ({ onLogin }) => {
         />
         <button type="submit">Login</button>
       </form>
-     <div className="google-login-button">
-      <a href="http://localhost:3000/auth/google">
-        <span>Login with Google</span>
-      </a>
-    </div>
+      <div className="google-login-button">
+        <a href="http://localhost:3000/auth/google">
+          <span>Login with Google</span>
+        </a>
+      </div>
       <p>
         Don't have an account? <a href="/register">Register</a>
       </p>
@@ -65,3 +66,4 @@ const LoginPage = ({ onLogin }) => {
 };
 
 export default LoginPage;
+

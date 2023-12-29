@@ -1,3 +1,4 @@
+//view\src\components\auth\AuthCheck.js
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
