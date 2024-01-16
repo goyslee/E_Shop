@@ -54,33 +54,43 @@ const addItemToCart = async (req, res) => {
             cartId = cartRes.rows[0].cartid;
         }
 
-        await pool.query('UPDATE Products SET stockquantity = stockquantity - $1 WHERE productid = $2', [parsedQuantity, productid]);
+        const existingItem = await pool.query('SELECT * FROM cartitems WHERE cartid = $1 AND productid = $2', [cartId, productid]);
 
-        const itemPrice = product.rows[0].price;
-        const itemTotalPrice = itemPrice * parsedQuantity;
+        if (existingItem.rows.length > 0) {
+            // Update the item quantity in the cart
+            return await updateCartItem(req, res);
+        } else {
+            // Add new item to the cart
+            await pool.query('UPDATE Products SET stockquantity = stockquantity - $1 WHERE productid = $2', [parsedQuantity, productid]);
 
-        await pool.query('INSERT INTO cartitems (cartid, productid, quantity) VALUES ($1, $2, $3)', [cartId, productid, parsedQuantity]);
+            const itemPrice = product.rows[0].price;
+            const itemTotalPrice = itemPrice * parsedQuantity;
 
-        const cartItems = await pool.query('SELECT productid, quantity FROM cartitems WHERE cartid = $1', [cartId]);
-        let cartTotalPrice = 0;
+            await pool.query('INSERT INTO cartitems (cartid, productid, quantity) VALUES ($1, $2, $3)', [cartId, productid, parsedQuantity]);
 
-        for (const item of cartItems.rows) {
-            const productPrice = await pool.query('SELECT price FROM Products WHERE productid = $1', [item.productid]);
-            if (productPrice.rows.length > 0) {
-                const itemPrice = parseFloat(productPrice.rows[0].price);
-                const itemQuantity = parseInt(item.quantity, 10) || 0;
-                const itemTotalPrice = itemPrice * itemQuantity;
-                cartTotalPrice += itemTotalPrice;
+            // Update cart total price
+            const cartItems = await pool.query('SELECT productid, quantity FROM cartitems WHERE cartid = $1', [cartId]);
+            let cartTotalPrice = 0;
+
+            for (const item of cartItems.rows) {
+                const productPrice = await pool.query('SELECT price FROM Products WHERE productid = $1', [item.productid]);
+                if (productPrice.rows.length > 0) {
+                    const itemPrice = parseFloat(productPrice.rows[0].price);
+                    const itemQuantity = parseInt(item.quantity, 10) || 0;
+                    const itemTotalPrice = itemPrice * itemQuantity;
+                    cartTotalPrice += itemTotalPrice;
+                }
             }
+
+            await pool.query('UPDATE carts SET totalprice = $1 WHERE cartid = $2', [cartTotalPrice, cartId]);
+
+            res.status(201).send('Item added to cart');
         }
-
-        await pool.query('UPDATE carts SET totalprice = $1 WHERE cartid = $2', [cartTotalPrice, cartId]);
-
-        res.status(201).send('Item added to cart');
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 
 const updateCartItem = async (req, res) => {
     const userId = req.user.userid;
@@ -152,9 +162,33 @@ const deleteCartItem = async (req, res) => {
     }
 };
 
+const getCartItemQuantity = async (req, res) => {
+    const userId = req.user.userid;
+    const { productid } = req.params;
+
+    try {
+        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        if (cartRes.rows.length === 0) {
+            return res.status(404).send('Cart not found');
+        }
+        const cartId = cartRes.rows[0].cartid;
+
+        const itemRes = await pool.query('SELECT quantity FROM cartitems WHERE cartid = $1 AND productid = $2', [cartId, productid]);
+        if (itemRes.rows.length === 0) {
+            return res.status(404).send('Item not found in cart');
+        }
+
+        const quantity = itemRes.rows[0].quantity;
+        res.json({ productid, quantity });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 module.exports = {
     addItemToCart,
     updateCartItem,
     deleteCartItem,
-    showCart
+    showCart,
+    getCartItemQuantity
 };

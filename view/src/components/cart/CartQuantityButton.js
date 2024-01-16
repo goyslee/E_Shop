@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
+//view\src\components\cart\CartQuantityButton.js
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './CartQuantityButton.css'; // Ensure you have corresponding CSS
+import './CartQuantityButton.css';
 
 const CartQuantityButton = ({ userid, productid }) => {
   const [quantity, setQuantity] = useState(0);
 
+  useEffect(() => {
+    const fetchCartQuantity = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/cart/quantity/${productid}`, {
+          withCredentials: true
+        });
+        setQuantity(response.data.quantity);
+      } catch (error) {
+        console.error('Error fetching cart quantity:', error);
+      }
+    };
+
+    fetchCartQuantity();
+  }, [productid]);
+
   const updateCart = async (newQuantity) => {
-  console.log(`Updating cart for product ID: ${productid} with quantity: ${newQuantity}`);  // Add this line for debugging  
-  if (!productid) {
-    console.error("Product ID is undefined");
-    return;
-  }
+    console.log(`Updating cart for product ID: ${productid} with quantity: ${newQuantity}`);
+    if (!productid) {
+      console.error("Product ID is undefined");
+      return;
+    }
     
     try {
       await axios.put(`http://localhost:3000/cart/${productid}`, {
         userid,
-        productid: productid,
+        productid,
         quantity: newQuantity
       }, {
         withCredentials: true
@@ -39,7 +55,6 @@ const CartQuantityButton = ({ userid, productid }) => {
     }
   };
 
- 
   const deleteFromCart = async () => {
     try {
       await axios.delete(`http://localhost:3000/cart/${productid}`, {
