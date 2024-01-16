@@ -185,10 +185,38 @@ const getCartItemQuantity = async (req, res) => {
     }
 };
 
+const deleteAllOfItem = async (req, res) => {
+    const userId = req.user.userid;
+    const { productId } = req.params;
+
+    try {
+        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        if (cartRes.rows.length === 0) {
+            return res.status(404).send('Cart not found');
+        }
+
+        const cartId = cartRes.rows[0].cartid;
+        const item = await pool.query('SELECT quantity FROM cartitems WHERE cartid = $1 AND productid = $2', [cartId, productId]);
+
+        if (item.rows.length === 0) {
+            return res.status(404).send('Item not found in cart');
+        }
+
+        const quantityToRemove = parseInt(item.rows[0].quantity, 10);
+        await pool.query('UPDATE Products SET stockquantity = stockquantity + $1 WHERE productid = $2', [quantityToRemove, productId]);
+        await pool.query('DELETE FROM cartitems WHERE cartid = $1 AND productid = $2', [cartId, productId]);
+
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 module.exports = {
     addItemToCart,
     updateCartItem,
     deleteCartItem,
     showCart,
-    getCartItemQuantity
+    getCartItemQuantity,
+    deleteAllOfItem
 };

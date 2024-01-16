@@ -42,6 +42,20 @@ const Cart = () => {
   console.log('Order submitted');
 };
 
+  const handleRemoveAll = async (productId) => {
+    // Confirmation dialog
+    const isConfirmed = window.confirm("Are you sure you want to remove all of these items?");
+    if (isConfirmed) {
+      try {
+        await axios.delete(`http://localhost:3000/cart/removeAll/${productId}`, { withCredentials: true });
+        setCartItems((prevCartItems) =>
+          prevCartItems.filter((item) => item.productid !== productId)
+        );
+      } catch (err) {
+        setError(err.message);
+      }
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -74,6 +88,7 @@ const Cart = () => {
               {cartItems.map((item) => (
                 <li key={item.productid} className="cart-item">
                   <img src={item.image_url} alt={item.name} className="cart-item-image" />
+                   
                   <div className="cart-item-details">
                     <span className="cart-item-name">{item.name}</span>
                     <span className="cart-item-price">${item.price}</span>
@@ -83,13 +98,16 @@ const Cart = () => {
                       initialQuantity={item.quantity}
                       onQuantityChange={handleQuantityChange} // Pass the handler
                     />
+                    <button className="remove-all-button" onClick={() => handleRemoveAll(item.productid)}>
+                      Remove All
+                    </button>
                   </div>
                 </li>
               ))}
             </ul>
           )}
           <button className="submit-button" onClick={handleSubmitOrder}>
-            Submit Order
+            Checkout
           </button>
         </>
       ) : (
