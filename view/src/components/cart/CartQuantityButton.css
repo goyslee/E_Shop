@@ -1,23 +1,44 @@
 /* CartQuantityButton.css */
 
-
+.cart-quantity-button {
+  display: flex;
+  align-items: center;
+}
 
 .cart-quantity-button button {
-    background-color: #fff;
-    color: #333;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
+  background-color: #9BB8CD; /* Fancy color */
+  color: white;
+  border: none;
+  padding: 8px 16px; /* Adjust padding as needed */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+  border-radius: 4px; /* Rounded corners */
+  font-weight:bold;
 }
 
 .cart-quantity-button button:hover {
-    background-color: #eaeaea;
+  background-color: #67729D; /* Darker color on hover */
 }
 
 .cart-quantity-button span {
-    padding: 5px 10px;
-    font-size: 16px;
-    color: #333;
+  padding: 0 16px; /* Adjust padding as needed */
+  font-size: 16px;
+  color: #333;
+}
+
+/* Media query for screens smaller than 768px (adjust breakpoints as needed) */
+@media (max-width: 768px) {
+  .cart-quantity-button {
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center;
+  }
+
+  .cart-quantity-button button {
+    margin-top: 8px; /* Add spacing between button and span */
+  }
+
+  .cart-quantity-button span {
+    padding: 8px 0; /* Adjust padding for better spacing */
+  }
 }

@@ -1,6 +1,6 @@
 // App.js
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/store';
 import axios from 'axios';
@@ -75,9 +75,7 @@ function App() {
           <Route path="/product/:productid" element={<ProductDetailsPage userid={userId} />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-history" element={
-            <OrderHistory />
-          } />
+          <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/profilecompletion/:userid" element={<ProfileCompletion />} />
           

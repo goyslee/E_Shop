@@ -14,11 +14,31 @@ const getAllOrders = async (req, res) => {
     const userId = req.user.userid;
     try {
         const ordersQuery = await pool.query('SELECT * FROM orders WHERE userid = $1', [userId]);
-        res.json(ordersQuery.rows);
+
+        const ordersWithDetails = await Promise.all(
+            ordersQuery.rows.map(async (order) => {
+                const orderDetailsQuery = await pool.query('SELECT * FROM orderdetails WHERE orderid = $1', [order.orderid]);
+                const orderDetails = orderDetailsQuery.rows.map(async (detail) => {
+                    const productQuery = await pool.query('SELECT * FROM Products WHERE productid = $1', [detail.productid]);
+                    return {
+                        ...detail,
+                        product: productQuery.rows[0]
+                    };
+                });
+
+                return {
+                    ...order,
+                    orderdetails: await Promise.all(orderDetails)
+                };
+            })
+        );
+
+        res.json(ordersWithDetails);
     } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
 
 const getOrderById = async (req, res) => {
     const userId = req.user.userid;

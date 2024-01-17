@@ -1,0 +1,65 @@
+/* OrderHistory.css */
+
+/* Overall page style */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Order item card */
+.order-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 20px 0;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.order-card p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+/* Order details list */
+.order-details {
+  list-style: none;
+  padding: 0;
+}
+
+.order-details li {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.order-details img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.order-details .item-info {
+  flex: 1;
+  font-size: 16px;
+}
+
+.order-details .item-quantity {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.order-details .item-price {
+  font-weight: bold;
+}

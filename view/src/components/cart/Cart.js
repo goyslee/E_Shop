@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CartQuantityButton from './CartQuantityButton';
 import AuthCheck from '../auth/AuthCheck';
-import './Cart.css';
+import './Cart.css'; // Updated import for the CSS file
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -39,8 +39,8 @@ const Cart = () => {
   };
 
   const handleSubmitOrder = () => {
-  console.log('Order submitted');
-};
+    console.log('Order submitted');
+  };
 
   const handleRemoveAll = async (productId) => {
     // Confirmation dialog
@@ -86,21 +86,22 @@ const Cart = () => {
           ) : (
             <ul className="cart-item-list">
               {cartItems.map((item) => (
-                <li key={item.productid} className="cart-item">
+                <li key={item.productid} className="cart-item-card"> {/* Updated class name */}
                   <img src={item.image_url} alt={item.name} className="cart-item-image" />
                    
                   <div className="cart-item-details">
                     <span className="cart-item-name">{item.name}</span>
-                    <span className="cart-item-price">${item.price}</span>
+                    <span className="cart-item-price"> - £{item.price} </span>
+                    
+                    <button className="remove-all-button" onClick={() => handleRemoveAll(item.productid)}>
+                      Remove All
+                    </button>
                     <CartQuantityButton
                       userid={username}
                       productid={item.productid}
                       initialQuantity={item.quantity}
                       onQuantityChange={handleQuantityChange} // Pass the handler
                     />
-                    <button className="remove-all-button" onClick={() => handleRemoveAll(item.productid)}>
-                      Remove All
-                    </button>
                   </div>
                 </li>
               ))}

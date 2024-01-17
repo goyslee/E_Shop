@@ -1,6 +1,9 @@
 //view\src\components\orders\OrderHistory.js
+//view\src\components\orders\OrderHistory.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+
+import './OrderHistory.css';
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
@@ -35,18 +38,31 @@ export default function OrderHistory() {
   }
 
   return (
-    <div>
+    <div className="container">
       <h2>Your Order History</h2>
       {orders.map((order) => (
-        <div key={order.orderid}>
+        <div key={order.orderid} className="order-card">
           <h3>Order ID: {order.orderid}</h3>
           <p>Date: {new Date(order.orderdate).toLocaleDateString()}</p>
           <p>Total Price: ${order.totalprice}</p>
           <p>Shipping Address: {order.shippingaddress}</p>
-          {/* Additional order details can be displayed here */}
+          <p>Number of Items: {order.orderdetails ? order.orderdetails.length : 0}</p>
+          {order.orderdetails && (
+            <ul className="order-details">
+              {order.orderdetails.map((item) => (
+                <li key={item.orderdetailid}>
+                  <img src={item.product.image_url} alt={item.product.name} />
+                  <div className="item-info">
+                    <p>{item.product.name}</p>
+                    <p>Quantity: <span className="item-quantity">{item.quantity}</span></p>
+                    <p>Total: <span className="item-price">£{item.price * item.quantity}</span> (£{item.price})</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       ))}
     </div>
   );
 }
-
