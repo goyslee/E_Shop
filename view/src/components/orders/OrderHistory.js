@@ -60,7 +60,7 @@ export default function OrderHistory() {
                   <div className="item-info">
                     <p>{item.product.name}</p>
                     <p>Quantity: <span className="item-quantity">{item.quantity}</span></p>
-                    <p>Total: <span className="item-price">£{item.price * item.quantity}</span> (£{item.price})</p>
+                    <p>Total: <span className="item-price">£{item.price}</span> (£{item.price / item.quantity})</p>
                   </div>
                 </li>
               ))}

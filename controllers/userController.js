@@ -70,16 +70,27 @@ const getUserById = async (req, res) => {
 
 
 const updateUser = async (req, res) => {
-  const { userid } = req.params;
+  const userid  = req.params.userid;
   const { name, email, password, address, phonenumber } = req.body;
-   
+
+  if (!userid) {
+    return res.status(401).send("User not authenticated");
+  }
+
   try {
-    if (parseInt(req.user.userid) !== parseInt(userid)) {
+    if (!req.params || parseInt(req.params.userid) !== parseInt(userid)) {
       return res.status(403).send("Not authorized to change other users' accounts");
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    let hashedPassword;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+    } else {
+      // Fetch current password if not changing
+      const currentUser = await pool.query('SELECT password FROM users WHERE userid = $1', [userid]);
+      hashedPassword = currentUser.rows[0].password;
+    }
 
     const result = await pool.query(
       'UPDATE users SET name = $1, email = $2, password = $3, address = $4, phonenumber = $5 WHERE userid = $6 RETURNING *',
@@ -92,9 +103,17 @@ const updateUser = async (req, res) => {
       res.status(404).send('User not found');
     }
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error('Error in updateUser:', err.message);
+    res.status(500).send('Internal Server Error');
   }
 };
+
+
+async function getUserCurrentPassword(userid) {
+  // Function to get the current password from the database
+  const result = await pool.query('SELECT password FROM users WHERE userid = $1', [userid]);
+  return result.rows[0].password;
+}
 
 const deleteUser = async (req, res) => {
   const { userid } = req.params;

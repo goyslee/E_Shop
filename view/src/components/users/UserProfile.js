@@ -2,26 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import ProfileCompletion from './ProfileCompletion'; // Import ProfileCompletion component
+import ProfileCompletion from './ProfileCompletion';
+import UserProfileEdit from './UserProfileEdit'; 
+import './UserProfile.css'; // Add this line to both components
+
 
 const UserProfile = () => {
   const navigate = useNavigate();
   const { userid, isAuthenticated, email, username } = useSelector(state => {
-    console.log('Redux State in Cart:', state); // Add this line
+    console.log('Redux State in Cart:', state);
     return state.auth;
   });
-   // Make sure 'userid' is correctly defined in the route
+
   console.log(`User Id is: ${userid}`); // Check if 'userid' is logged correctly
 
   const [userDetails, setUserDetails] = useState(null);
+  const [editMode, setEditMode] = useState(false); // State to control edit mode
 
   useEffect(() => {
-    // Fetch user data based on userid and set it in the state
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/users/user-profile/${userid}`);
         console.log('Axios default headers:', axios.defaults.headers);
-        console.log(typeof response.data)
+        console.log(typeof response.data);
         setUserDetails(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -33,26 +36,54 @@ const UserProfile = () => {
     }
   }, [userid, isAuthenticated, email, username]);
 
-  const handleProfileComplete = () => {
-    console.log("Profile completed");
-    // Additional actions after profile completion, e.g., redirect
-    navigate('/products'); // You can replace '/products' with the desired redirect path
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
   };
 
-  return (
-    <div>
-      <h1>User Profile</h1>
-      {userDetails && userDetails.phonenumber ? (
-        <div>
-          <p>Name: {userDetails.name}</p>
-          <p>Email: {userDetails.email}</p>
-          <p>Address: {userDetails.address}</p>
-          <p>Phone Number: {userDetails.phonenumber}</p>
-        </div>
-      ) : (
-        <ProfileCompletion onProfileComplete={handleProfileComplete} />
-      )}
+  const handleProfileComplete = () => {
+    console.log("Profile completed");
+    navigate('/products');
+  };
+
+  const handleUserDetailsUpdate = (updatedDetails) => {
+  setUserDetails(updatedDetails);
+};
+
+   return (
+    <div className="user-profile-container">
+  <h1>User Profile</h1>
+  {editMode ? (
+    <UserProfileEdit 
+      userDetails={userDetails}
+      onEditComplete={toggleEditMode}
+      onUserDetailsUpdate={handleUserDetailsUpdate} 
+      userid={userid} 
+    />
+  ) : userDetails && userDetails.phonenumber ? (
+    <div className="user-profile-card">
+      <div className="user-profile-field">
+        <label>Name:</label>
+        <p>{userDetails.name}</p>
+      </div>
+      <div className="user-profile-field">
+        <label>Email:</label>
+        <p>{userDetails.email}</p>
+      </div>
+      <div className="user-profile-field">
+        <label>Address:</label>
+        <p>{userDetails.address}</p>
+      </div>
+      <div className="user-profile-field">
+        <label>Phone Number:</label>
+        <p>{userDetails.phonenumber}</p>
+      </div>
+      <button onClick={toggleEditMode} className="edit-profile-btn">Edit Profile</button>
     </div>
+  ) : (
+    <ProfileCompletion onProfileComplete={handleProfileComplete} />
+  )}
+</div>
+
   );
 };
 
