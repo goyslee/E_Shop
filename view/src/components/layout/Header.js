@@ -1,28 +1,50 @@
 // Header.js
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaShoppingCart, FaBoxOpen } from 'react-icons/fa';
 import './Header.css';
+import { useSelector } from 'react-redux';
 
 const Header = ({ isAuthenticated, username }) => {
+  const {userid} = useSelector(state => state.auth);
+
+  const getNavLinkClass = ({ isActive }) => {
+    return isActive ? 'nav-link active-nav-link' : 'nav-link';
+  };
+
+   const getNavLinkClassForUser = ({ isActive }) => {
+    return isActive ? 'nav-link navbar-user active-nav-link-user' : 'nav-link navbar-user';
+  };
+
+  
+
+
   return (
     <header className="navbar">
       <nav>
         <ul className="navbar-nav">
-          <li><NavLink to="/products">Products</NavLink></li>
+          <li>
+            <div className="login-section">
+            <NavLink to="/products" className={getNavLinkClass}>
+              <FaBoxOpen />  Products
+              </NavLink>
+            </div>  
+          </li>
           {/* Other navigation links */}
         </ul>
       </nav>
       <div className="login-section">
         {!isAuthenticated ? (
-          <NavLink to="/login" className="nav-link">Login</NavLink>
+          <NavLink to="/login" className={getNavLinkClass}>Login</NavLink>
         ) : (
           <>
-            <span className="navbar-text">
-              <FaUser /> {username}
-            </span>
-            <NavLink to="/cart" className="nav-link">Cart</NavLink> {/* Place the cart link here */}
-            <NavLink to="/logout" className="logout-button">Logout</NavLink>
+            <NavLink to={`/user-profile/${userid}`} className={getNavLinkClassForUser}>
+              <FaUser />  {username}
+            </NavLink>
+            <NavLink to="/cart" className={getNavLinkClass}>
+              <FaShoppingCart />  Cart
+            </NavLink>
+            <NavLink to="/logout" className='logout-button'>Logout</NavLink>
           </>
         )}
       </div>

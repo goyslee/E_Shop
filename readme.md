@@ -2,6 +2,8 @@
 ```
 E_Shop                                    //
 ├─ .babelrc                               //
+├─ .vscode                                //
+│  └─ settings.json                       //
 ├─ config                                 //
 │  └─ dbConfig.js                         //
 ├─ controllers                            //
@@ -55,7 +57,8 @@ E_Shop                                    //
 │     │  │  ├─ LogoutPage.css             //
 │     │  │  ├─ LogoutPage.js              //
 │     │  │  ├─ RegisterPage.css           //
-│     │  │  └─ RegisterPage.js            //
+│     │  │  ├─ RegisterPage.js            //
+│     │  │  └─ setAuthToken.js            //
 │     │  ├─ cart                          //
 │     │  │  ├─ Cart.css                   //
 │     │  │  ├─ Cart.js                    //
@@ -67,6 +70,7 @@ E_Shop                                    //
 │     │  │  ├─ Header.css                 //
 │     │  │  └─ Header.js                  //
 │     │  ├─ orders                        //
+│     │  │  ├─ OrderHistory.css           //
 │     │  │  └─ OrderHistory.js            //
 │     │  ├─ products                      //
 │     │  │  ├─ ProductDetails.js          //
@@ -89,6 +93,15 @@ E_Shop                                    //
 │     ├─ reportWebVitals.js               //
 │     ├─ setupTests.js                    //
 │     └─ store                            //
+│        ├─ actions                       //
+│        │  ├─ authActions.js             //
+│        │  ├─ cartActions.js             //
+│        │  └─ userActions.js             //
+│        ├─ reducers                      //
+│        │  ├─ authReducer.js             //
+│        │  ├─ cartReducer.js             //
+│        │  ├─ rootReducer.js             //
+│        │  └─ userReducer.js             //
 │        └─ store.js                      //
 ├─ webpack.config.client.js               //
 └─ webpack.config.server.js               //

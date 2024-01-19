@@ -1,11 +1,16 @@
 //view\src\components\products\ProductsList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Product from './ProductDetails';
 import './ProductList.css';
 
 export default function ProductList() {
+   const { userid, isAuthenticated } = useSelector(state => {
+    console.log('Redux State in Cart:', state); // Add this line
+    return state.auth;
+  });
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +29,7 @@ export default function ProductList() {
     };
 
     fetchProducts();
-  }, []);
+  }, [userid, isAuthenticated]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;

@@ -107,12 +107,12 @@ app.get('*', (req, res) => {
 });
 
 app.post('/update-user-details', (req, res) => {
-  const { userId, address, phonenumber } = req.body;
+  const { userid, address, phonenumber } = req.body;
   
   // Update user details in the database
   pool.query(
     'UPDATE Users SET address = $1, phonenumber = $2 WHERE userid = $3',
-    [address, phonenumber, userId],
+    [address, phonenumber, userid],
     (error, results) => {
       if (error) {
         res.status(500).send('Error updating user details');

@@ -16,7 +16,8 @@ const ProfileCompletion = () => {
     // Fetch user data based on userid and set it in the state
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/user/${userid}`);
+        const response = await axios.get(`http://localhost:3000/users/${userid}`);
+        console.log('Axios default headers:', axios.defaults.headers);
         setDetails({
           username: response.data.name, // Update this based on your actual user object structure
           phonenumber: '',
@@ -40,7 +41,7 @@ const ProfileCompletion = () => {
     e.preventDefault();
     const userUpdateData = {
       ...details,
-      userId: userid
+      userid: userid
     };
     try {
       await axios.post('http://localhost:3000/update-user-details', userUpdateData);

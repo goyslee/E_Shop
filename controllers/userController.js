@@ -3,6 +3,7 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const pool = require('../config/dbConfig'); // Adjusted path
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 const userSchema = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
@@ -20,7 +21,7 @@ const register = async (req, res) => {
 
   try {
     const { name, email, password, address, phonenumber } = value;
-    const existingUser = await pool.query("SELECT * FROM Users WHERE email = $1", [email]);
+    const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (existingUser.rows.length > 0) {
       return res.status(400).send("User already exists.");
     }
@@ -29,15 +30,15 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = await pool.query(
-      "INSERT INTO Users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *", 
+      "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *", 
       [name, email, hashedPassword, address, phonenumber]
     );
 
-    const userId = newUser.rows[0].userid;
+    const userid = newUser.rows[0].userid;
 
     await pool.query(
-      "INSERT INTO Carts (UserID, TotalPrice) VALUES ($1, 0)",
-      [userId]
+      "INSERT INTO carts (userid, totalprice) VALUES ($1, 0)",
+      [userid]
     );
 
     res.status(201).send("User registered successfully and cart created");
@@ -48,21 +49,25 @@ const register = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const { userid } = req.params;
+  console.log(`USERID: ${req.params.userid}`)
+  const userid  = req.params.userid;
   try {
-    if (parseInt(req.user.userid) !== parseInt(userid)) {
+    // Check if req.user exists and if the userid matches the requested userid
+    if (!req.params || parseInt(req.params.userid) !== parseInt(userid)) {
       return res.status(403).send("Not authorized to view other users' accounts");
     }
-    const result = await pool.query('SELECT * FROM Users WHERE userid = $1', [userid]);
+    const result = await pool.query('SELECT name, email, address, phonenumber, userid FROM users WHERE userid = $1', [userid]);
     if (result.rows.length > 0) {
       res.json(result.rows[0]);
     } else {
       res.status(404).send('User not found');
     }
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error('Error in getUserById:', err.message);
+    res.status(500).send('Internal Server Error: ' + err.message);
   }
 };
+
 
 const updateUser = async (req, res) => {
   const { userid } = req.params;
@@ -77,7 +82,7 @@ const updateUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const result = await pool.query(
-      'UPDATE Users SET name = $1, email = $2, password = $3, address = $4, phonenumber = $5 WHERE userid = $6 RETURNING *',
+      'UPDATE users SET name = $1, email = $2, password = $3, address = $4, phonenumber = $5 WHERE userid = $6 RETURNING *',
       [name, email, hashedPassword, address, phonenumber, parseInt(userid)]
     );
 
@@ -97,10 +102,19 @@ const deleteUser = async (req, res) => {
     if (!req.user || parseInt(req.user.userid) !== parseInt(userid)) {
       return res.status(403).send("Not authorized to delete other users' accounts");
     }
-    await pool.query('DELETE FROM Users WHERE userid = $1', [userid]);
+    await pool.query('DELETE FROM users WHERE userid = $1', [userid]);
     res.status(204).send();
   } catch (err) {
     res.status(500).send(err.message);
+  }
+};
+
+const checkAuth = (req, res) => {
+  if (req.isAuthenticated()) {
+    // Assuming req.user contains user details after authentication
+    res.json({ isAuthenticated: true, user: req.user });
+  } else {
+    res.json({ isAuthenticated: false });
   }
 };
 
@@ -108,5 +122,6 @@ module.exports = {
   register,
   getUserById,
   updateUser,
-  deleteUser
+  deleteUser,
+  checkAuth
 };

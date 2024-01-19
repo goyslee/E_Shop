@@ -1,69 +1,69 @@
 // App.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './store/store';
+import { Provider, useSelector, useDispatch } from 'react-redux';
+import { store } from './store/store';
 import axios from 'axios';
 
-// Auth Components
 import LoginPage from './components/auth/LoginPage';
 import LogoutPage from './components/auth/LogoutPage';
 import RegisterPage from './components/auth/RegisterPage';
-
-// User Components
 import ProfileCompletion from './components/users/ProfileCompletion';
-import UserProfile from './components/users/UserProfile'; 
-
-// Product Components
+import UserProfile from './components/users/UserProfile';
 import ProductsList from './components/products/ProductsList';
 import ProductDetailsPage from './components/products/ProductDetailsPage';
-
-// Other Components
 import Cart from './components/cart/Cart';
 import Checkout from './components/checkout/Checkout';
 import OrderHistory from './components/orders/OrderHistory';
 import Header from './components/layout/Header';
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState('');
-  const [userNeedsProfileCompletion, setUserNeedsProfileCompletion] = useState(false);
-  const [userId, setUserId] = useState(null);  // State for user ID
+
+import { loginSuccess, logout } from './store/actions/authActions';
+
+const App = () => {
+  const dispatch = useDispatch();
+  const { isAuthenticated, username } = useSelector(state => state.auth);
 
   useEffect(() => {
-    checkUserAuthentication();
-  }, []);
-
-  const checkUserAuthentication = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/check-auth', { withCredentials: true });
-      setIsAuthenticated(response.data.isAuthenticated);
-      setUsername(response.data.isAuthenticated ? response.data.user.name : '');
-      setUserNeedsProfileCompletion(response.data.needsProfileCompletion);
-      if (response.data.isAuthenticated) {
-        setUserId(response.data.user.id);  // Assuming 'id' is the field name in the user object
-      } else {
-        setUserId(null);
+    const checkUserAuthentication = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/check-auth', { withCredentials: true });
+        if(response.data.isAuthenticated) {
+          dispatch(loginSuccess(response.data.user.name, response.data.user.userid));
+        } else {
+          dispatch(logout());
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
       }
-    } catch (error) {
-      console.error('Error checking authentication:', error);
+    };
+
+    checkUserAuthentication();
+  }, [dispatch]);
+
+ 
+
+  const setAuthToken = (token) => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log(axios.defaults.headers.common['Authorization'])
+    } else {
+      delete axios.defaults.headers.common['Authorization'];
     }
   };
 
-  const handleLogin = user => {
-    setIsAuthenticated(true);
-    setUsername(user.name);
-    setUserId(user.userid); // Assuming 'id' is the field name in the user object
+  const handleLogin = (user) => {
+    setAuthToken(user.token);
+    dispatch(loginSuccess(user.name, user.userid, user.email));
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setUsername('');
-    setUserId(null);
+    setAuthToken(null);
+    dispatch(logout());
   };
 
   return (
-     <Provider store={store}>
+    <Provider store={store}>
       <Router>
         <Header isAuthenticated={isAuthenticated} username={username} />
         <Routes>
@@ -72,16 +72,16 @@ function App() {
           <Route path="/logout" element={<LogoutPage onLogout={handleLogout} />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/products" element={<ProductsList />} />
-          <Route path="/product/:productid" element={<ProductDetailsPage userid={userId} />} />
+          <Route path="/product/:productid" element={<ProductDetailsPage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/user-profile/:userid" element={<UserProfile />} />
           <Route path="/profilecompletion/:userid" element={<ProfileCompletion />} />
-          
         </Routes>
-        </Router>
-      </Provider>
+      </Router>
+    </Provider>
   );
 }
 

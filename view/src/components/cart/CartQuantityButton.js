@@ -1,10 +1,20 @@
 //view\src\components\cart\CartQuantityButton.js
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import './CartQuantityButton.css';
 
-const CartQuantityButton = ({ userid, productid }) => {
+const CartQuantityButton = ({ productid }) => {
+  const { userid, isAuthenticated } = useSelector(state => {
+    console.log('Redux State in Cart:', state); // Add this line
+    return state.auth;
+  });
   const [quantity, setQuantity] = useState(0);
+  const numericUserId = Number(userid)
+    
+  console.log('UserID in CartQuantityButton:', numericUserId);
+
 
   useEffect(() => {
     const fetchCartQuantity = async () => {
@@ -16,10 +26,17 @@ const CartQuantityButton = ({ userid, productid }) => {
       } catch (error) {
         console.error('Error fetching cart quantity:', error);
       }
+       // Check if userid is a number
+    if (isNaN(userid)) {
+      console.error('UserID is not a valid number:', userid);
+      // Handle the case where userid is not valid
+      // This might include returning null, showing an error, or using a default value
+      return null;
+    }
     };
 
     fetchCartQuantity();
-  }, [productid]);
+  }, [productid, userid, isAuthenticated]);
 
   const updateCart = async (newQuantity) => {
     console.log(`Updating cart for product ID: ${productid} with quantity: ${newQuantity}`);
@@ -88,11 +105,17 @@ const CartQuantityButton = ({ userid, productid }) => {
 
   return (
     <div className="cart-quantity-button">
-      <button onClick={decrement}>-</button>
+      <button onClick={decrement} >-</button>
       <span>{quantity}</span>
-      <button onClick={increment}>+</button>
+      <button onClick={increment} >+</button>
     </div>
   );
 };
+
+CartQuantityButton.propTypes = {
+  userid: PropTypes.number, // If userid can be null/undefined, don't use isRequired
+  productid: PropTypes.number.isRequired,
+};
+
 
 export default CartQuantityButton;

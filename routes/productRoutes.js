@@ -2,6 +2,8 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
+const isAuthorised = require('../middleware/isAuthorised'); 
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 router.post('/products', productController.addProduct);
 router.get('/products', productController.getAllProducts);

@@ -1,19 +1,25 @@
-import { REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_FAILURE } from '../actions/userActions';
-
+// src/reducers/userReducer.js
 const initialState = {
-  isRegistering: false,
-  username: '',
-  registrationError: ''
+  isLoggedIn: false,
+  userid: null,
+  email: ''
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case REGISTER_REQUEST:
-      return { ...state, isRegistering: true, registrationError: '' };
-    case REGISTER_SUCCESS:
-      return { ...state, isRegistering: false, username: action.payload };
-    case REGISTER_FAILURE:
-      return { ...state, isRegistering: false, registrationError: action.payload };
+    case 'LOGIN':
+      return {
+        ...state,
+        isLoggedIn: true,
+        userid: action.payload.userid,
+        email: action.payload.email
+      };
+    case 'LOGOUT':
+      return {
+        ...state,
+        isLoggedIn: false,
+        userid: null
+      };
     default:
       return state;
   }

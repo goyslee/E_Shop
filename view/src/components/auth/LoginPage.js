@@ -1,15 +1,45 @@
 // LoginPage.js
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../services/authServices';
 import { loginSuccess } from '../../store/actions/authActions';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import './LoginPage.css'
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({ email: '', password: '' });
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+
+  useEffect(() => {
+    const getGoogleLoginToken = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('token');
+    };
+
+  const handleGoogleLogin = async () => {
+  const googleLoginToken = getGoogleLoginToken();
+  if (googleLoginToken) {
+    try {
+      const response = await axios.get(`http://localhost:3000/auth/google/callback?token=${googleLoginToken}`);
+      const { name, userid, email } = response.data.user;
+      dispatch(loginSuccess(name, userid, email));
+      navigate('/products');
+    } catch (error) {
+      console.error('Error handling Google login:', error);
+    }
+  }
+};
+
+    if (isAuthenticated) {
+      navigate('/products');
+    } else {
+      handleGoogleLogin();
+    }
+  }, [isAuthenticated, navigate, dispatch]);
+
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -17,18 +47,7 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post('http://localhost:3000/login', credentials, { withCredentials: true });
-      if (response.status === 200) {
-        dispatch(loginSuccess(response.data.user.name));
-        navigate('/products');
-        console.log('Successfully logged in');
-      } else {
-        console.error('Login failed:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Login error:', error.response.data.message);
-    }
+    login(credentials); // Using the authService's login function
   };
 
   return (
@@ -66,4 +85,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

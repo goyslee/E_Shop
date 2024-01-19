@@ -13,11 +13,11 @@ async function getProductPrice(productid) {
 
 const checkout = async (req, res) => {
     const cartId = req.params.cartId;
-    const userId = req.user.userid;
+    const userid = req.user.userid;
 
     try {
         const cartUserQuery = await pool.query('SELECT userid FROM carts WHERE cartid = $1', [cartId]);
-        if (cartUserQuery.rows.length === 0 || parseInt(cartUserQuery.rows[0].userid) !== parseInt(userId)) {
+        if (cartUserQuery.rows.length === 0 || parseInt(cartUserQuery.rows[0].userid) !== parseInt(userid)) {
             return res.status(403).send("Not authorized to view other users' carts");
         }
 
@@ -29,13 +29,13 @@ const checkout = async (req, res) => {
         const totalQuery = await pool.query('SELECT totalprice FROM carts WHERE cartid = $1', [cartId]);
         const totalPrice = totalQuery.rows[0].totalprice;
 
-        const paymentResult = await simulatePayment(userId, cartId, totalPrice);
+        const paymentResult = await simulatePayment(userid, cartId, totalPrice);
 
         if (paymentResult.success) {
-            const userQuery = await pool.query('SELECT address FROM users WHERE userid = $1', [userId]);
+            const userQuery = await pool.query('SELECT address FROM users WHERE userid = $1', [userid]);
             const shippingAddress = userQuery.rows[0].address;
 
-            const orderQuery = await pool.query('INSERT INTO orders (userid, orderdate, totalprice, shippingaddress) VALUES ($1, NOW(), $2, $3) RETURNING *', [userId, totalPrice, shippingAddress]);
+            const orderQuery = await pool.query('INSERT INTO orders (userid, orderdate, totalprice, shippingaddress) VALUES ($1, NOW(), $2, $3) RETURNING *', [userid, totalPrice, shippingAddress]);
             const orderId = orderQuery.rows[0].orderid;
 
             const cartItemsQuery = await pool.query('SELECT productid, quantity FROM cartitems WHERE cartid = $1', [cartId]);

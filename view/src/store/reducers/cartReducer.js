@@ -1,3 +1,4 @@
+//view\src\store\reducers\cartReducer.js
 import { UPDATE_CART_QUANTITY } from '../actions/cartActions';
 
 const initialState = {

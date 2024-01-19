@@ -1,17 +1,23 @@
 //view\src\components\products\ProductDetailsPage.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+
 import CartQuantityButton from '../cart/CartQuantityButton';
 import './ProductDetailsPage.css';
 
 const ProductDetailsPage = () => {
+  const { userid, isAuthenticated } = useSelector(state => {
+    console.log('Redux State in Cart:', state); // Add this line
+    return state.auth;
+  });
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const { productid, userid } = useParams();
-
+  const { productid } = useParams();
+  const numericProductId = Number(productid);
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -28,7 +34,7 @@ const ProductDetailsPage = () => {
     };
 
     fetchProduct();
-  }, [productid]);
+  }, [productid, isAuthenticated, userid]);
 
   if (isLoading) {
     return <div className="loading">Loading product details...</div>;
@@ -49,7 +55,7 @@ const ProductDetailsPage = () => {
       <p className="price">Price: ${product.price}</p>
       {product.image_url && <img src={product.image_url} alt={product.name} className="product-image" />}
       {/* CartQuantityButton component */}
-      <CartQuantityButton userid={userid} productid={productid} />
+      <CartQuantityButton userid={userid} productid={numericProductId} />
     </div>
   );
 }

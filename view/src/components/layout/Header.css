@@ -46,26 +46,100 @@
 }
 
 .login-button, .logout-button {
-  background: none;
-  border: none;
-  color: white;
+  background: #232323;
+  border: 2px solid transparent; /* Added border */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0px 2px 4px rgba(255, 255, 255, 0.2); /* Shadow for depth */
+  color: #fff;
   cursor: pointer;
   font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 0.3rem 0.7rem;
+  margin-left: 0.5rem;
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s; /* Smooth transitions */
 }
 
 .login-button:hover, .logout-button:hover {
-  background-color: #555;
-  color: #ffffff;
+  background-color: #ffffff;
+  color: #232323;
+  box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.3); /* Slightly larger shadow on hover */
+  transform: translateY(-2px); /* Slight raise effect on hover */
 }
+
 
 .nav-link {
   color: #ffffff;
   text-decoration: none;
+  margin: 0.5rem;
+}
+
+.navbar-nav a, .nav-link {
+  color: #f8f8f8;
+  text-decoration: none;
+  padding: 0.5rem 1rem; /* Adjust padding as needed */
+  display: flex;
+  align-items: center;
 }
 
 /* Add this CSS to position the cart link */
 .navbar-nav {
   flex: 1; /* Take up the available space */
   justify-content: flex-end; /* Align items to the right */
+}
+
+.navbar-user {
+  font-weight: bold;
+  color: peru;
+  text-decoration: none;
+  animation: flashingColor 3s infinite;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.navbar-user:visited {
+  color: peru;
+}
+
+.navbar-user:hover {
+  transform: scale(1.1);
+  color: #232323;
+}
+
+.active-nav-link {
+  background-color: darkcyan;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  border-radius: 2rem;  
+}
+
+.active-nav-link-user {
+  background-color: darkcyan;
+  display: flex;
+   align-items: center;
+  border-radius: 2rem;  
+  animation: flashingColorUser 3s infinite;
+  transition: none;
+}
+
+
+@keyframes flashingColor {
+  0%, 100% {
+    color: peru;
+  }
+  50% {
+    color: lightblue;
+  }
+  
+  
+  
+}
+
+@keyframes flashingColorUser {
+  0%, 100% {
+    color: #fff;
+  }
+  50% {
+    color: #fff;
+  }
 }

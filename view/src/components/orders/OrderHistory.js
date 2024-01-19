@@ -2,10 +2,15 @@
 //view\src\components\orders\OrderHistory.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import './OrderHistory.css';
 
 export default function OrderHistory() {
+  const { userid, isAuthenticated } = useSelector(state => {
+    console.log('Redux State in Cart:', state); // Add this line
+    return state.auth;
+  });
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -23,7 +28,7 @@ export default function OrderHistory() {
     };
 
     fetchOrders();
-  }, []);
+  }, [userid, isAuthenticated]);
 
   if (isLoading) {
     return <div>Loading...</div>;

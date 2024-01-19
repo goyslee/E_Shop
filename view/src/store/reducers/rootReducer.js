@@ -1,3 +1,4 @@
+//view\src\store\reducers\rootReducer.js
 import { combineReducers } from 'redux';
 import authReducer from './authReducer';
 import cartReducer from './cartReducer';

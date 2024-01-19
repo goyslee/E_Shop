@@ -2,11 +2,11 @@
 const pool = require('../config/dbConfig');
 
 const showCart = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
 
     try {
         // Check if the user has a cart
-        const cartRes = await pool.query('SELECT * FROM carts WHERE userid = $1', [userId]);
+        const cartRes = await pool.query('SELECT * FROM carts WHERE userid = $1', [userid]);
         if (cartRes.rows.length === 0) {
             return res.status(404).send('Cart not found');
         }
@@ -31,7 +31,7 @@ const showCart = async (req, res) => {
 
 
 const addItemToCart = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
     const { productid, quantity } = req.body;
     const parsedQuantity = parseInt(quantity, 10);
 
@@ -45,10 +45,10 @@ const addItemToCart = async (req, res) => {
             return res.status(400).send('Insufficient stock');
         }
 
-        let cartRes = await pool.query('SELECT * FROM carts WHERE userid = $1', [userId]);
+        let cartRes = await pool.query('SELECT * FROM carts WHERE userid = $1', [userid]);
         let cartId;
         if (cartRes.rows.length === 0) {
-            const newCart = await pool.query('INSERT INTO carts (userid, totalprice) VALUES ($1, 0) RETURNING cartid', [userId]);
+            const newCart = await pool.query('INSERT INTO carts (userid, totalprice) VALUES ($1, 0) RETURNING cartid', [userid]);
             cartId = newCart.rows[0].cartid;
         } else {
             cartId = cartRes.rows[0].cartid;
@@ -61,7 +61,7 @@ const addItemToCart = async (req, res) => {
             return await updateCartItem(req, res);
         } else {
             // Add new item to the cart
-            await pool.query('UPDATE Products SET stockquantity = stockquantity - $1 WHERE productid = $2', [parsedQuantity, productid]);
+            await pool.query('UPDATE products SET stockquantity = stockquantity - $1 WHERE productid = $2', [parsedQuantity, productid]);
 
             const itemPrice = product.rows[0].price;
             const itemTotalPrice = itemPrice * parsedQuantity;
@@ -93,7 +93,7 @@ const addItemToCart = async (req, res) => {
 
 
 const updateCartItem = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
     const { productid, quantity } = req.body;
     const updatedQuantity = parseInt(quantity, 10);
 
@@ -102,7 +102,7 @@ const updateCartItem = async (req, res) => {
     }
 
     try {
-        const userCart = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        const userCart = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userid]);
         if (userCart.rows.length === 0) {
             return res.status(404).send('User cart not found');
         }
@@ -122,9 +122,9 @@ const updateCartItem = async (req, res) => {
                 return res.status(400).send('Insufficient stock');
             }
 
-            await pool.query('UPDATE Products SET stockquantity = stockquantity - $1 WHERE productid = $2', [updatedQuantity - currentQuantity, productid]);
+            await pool.query('UPDATE products SET stockquantity = stockquantity - $1 WHERE productid = $2', [updatedQuantity - currentQuantity, productid]);
         } else if (updatedQuantity < currentQuantity) {
-            await pool.query('UPDATE Products SET stockquantity = stockquantity + $1 WHERE productid = $2', [currentQuantity - updatedQuantity, productid]);
+            await pool.query('UPDATE products SET stockquantity = stockquantity + $1 WHERE productid = $2', [currentQuantity - updatedQuantity, productid]);
         }
 
         await pool.query('UPDATE cartitems SET quantity = $1 WHERE productid = $2 AND cartid = $3', [updatedQuantity, productid, userCartId]);
@@ -136,11 +136,11 @@ const updateCartItem = async (req, res) => {
 };
 
 const deleteCartItem = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
     const { itemId } = req.params;
 
     try {
-        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userid]);
         if (cartRes.rows.length === 0) {
             return res.status(404).send('Cart not found');
         }
@@ -153,7 +153,7 @@ const deleteCartItem = async (req, res) => {
         }
 
         const parsedQuantity = parseInt(item.rows[0].quantity, 10);
-        await pool.query('UPDATE Products SET stockquantity = stockquantity + $1 WHERE productid = $2', [parsedQuantity, item.rows[0].productid]);
+        await pool.query('UPDATE products SET stockquantity = stockquantity + $1 WHERE productid = $2', [parsedQuantity, item.rows[0].productid]);
         await pool.query('DELETE FROM cartitems WHERE cartitemid = $1', [itemId]);
 
         res.status(204).send();
@@ -163,11 +163,11 @@ const deleteCartItem = async (req, res) => {
 };
 
 const getCartItemQuantity = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
     const { productid } = req.params;
 
     try {
-        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userid]);
         if (cartRes.rows.length === 0) {
             return res.status(404).send('Cart not found');
         }
@@ -186,11 +186,11 @@ const getCartItemQuantity = async (req, res) => {
 };
 
 const deleteAllOfItem = async (req, res) => {
-    const userId = req.user.userid;
+    const userid = req.user.userid;
     const { productId } = req.params;
 
     try {
-        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userId]);
+        const cartRes = await pool.query('SELECT cartid FROM carts WHERE userid = $1', [userid]);
         if (cartRes.rows.length === 0) {
             return res.status(404).send('Cart not found');
         }
@@ -203,7 +203,7 @@ const deleteAllOfItem = async (req, res) => {
         }
 
         const quantityToRemove = parseInt(item.rows[0].quantity, 10);
-        await pool.query('UPDATE Products SET stockquantity = stockquantity + $1 WHERE productid = $2', [quantityToRemove, productId]);
+        await pool.query('UPDATE products SET stockquantity = stockquantity + $1 WHERE productid = $2', [quantityToRemove, productId]);
         await pool.query('DELETE FROM cartitems WHERE cartid = $1 AND productid = $2', [cartId, productId]);
 
         res.status(204).send();
