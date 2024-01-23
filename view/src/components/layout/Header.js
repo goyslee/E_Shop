@@ -43,7 +43,10 @@ const Header = ({ isAuthenticated, username }) => {
             </NavLink>
             <NavLink to="/cart" className={getNavLinkClass}>
               <FaShoppingCart />  Cart
-            </NavLink>
+              </NavLink>
+             <NavLink to="/order-history" className={getNavLinkClass}>
+               Order History
+            </NavLink>  
             <NavLink to="/logout" className='logout-button'>Logout</NavLink>
           </>
         )}

@@ -64,11 +64,14 @@ const Cart = () => {
       {cartItems.length === 0 ? (
         <p>Your cart is empty</p>
       ) : (
-        <ul className="cart-item-list">{renderCartItems()}</ul>
+          <>
+            <ul className="cart-item-list">{renderCartItems()}</ul>
+            <button onClick={() => navigate('/checkout')} className="remove-all-button">
+              Proceed to Checkout
+            </button>
+          </>
       )}
-      <button onClick={() => navigate('/checkout')} className="remove-all-button">
-        Proceed to Checkout
-      </button>
+      
     </div>
   );
 };
