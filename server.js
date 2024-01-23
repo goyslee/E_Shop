@@ -18,7 +18,8 @@ const authController = require('./controllers/authController');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const local_port = 4242
+const port = process.env.PORT || local_port ;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
 app.use(session({
@@ -39,7 +40,8 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: 'http://localhost:3001', // Adjust according to your frontend server
+  origin: [`http://localhost:${local_port}`, 'http://localhost:3000', 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
 
@@ -69,9 +71,9 @@ app.get('/check-auth', (req, res) => {
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   if (req.user && req.user.address) {
-    res.redirect('http://localhost:3001/products');
+    res.redirect('http://localhost:3000/products');
   } else {
-    res.redirect(`http://localhost:3001/profilecompletion/${req.user.userid}`);
+    res.redirect(`http://localhost:3000/profilecompletion/${req.user.userid}`);
   }
 });
 

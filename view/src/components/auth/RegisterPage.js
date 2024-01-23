@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './RegisterPage.css'; // Make sure you have this CSS file created
+import './RegisterPage.css'; 
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -21,11 +21,24 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/register', formData);
+      const url = `http://localhost:${process.env.REACT_APP_LOCAL_PORT}/register`;
+      console.log("URL:", url);
+      const response = await axios.post(url, formData);
+      console.log("Form Data:", formData);
       console.log(response.data);
       navigate('/login');
     } catch (error) {
-      console.error('Registration error:', error);
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.error('Error data:', error.response.data);
+    console.error('Error status:', error.response.status);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.error('Error message:', error.message);
+  }
+
+
     }
   };
 
@@ -68,13 +81,13 @@ const RegisterPage = () => {
         <input
           type="text"
           name="phonenumber"
-          value={formData.phonenumber}
+          value={formData.phonenumber.toString()}
           onChange={handleChange}
           placeholder="Phone Number"
           required
         />
         <button type="submit">Register</button>
-         <a href="http://localhost:3000/auth/google" className="google-auth-button">
+         <a href={`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/auth/google`} className="google-auth-button">
           Register with Google
         </a>
          <h3>

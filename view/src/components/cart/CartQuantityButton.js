@@ -19,7 +19,7 @@ const CartQuantityButton = ({ productid }) => {
   useEffect(() => {
     const fetchCartQuantity = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/cart/quantity/${productid}`, {
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/cart/quantity/${productid}`, {
           withCredentials: true
         });
         setQuantity(response.data.quantity);
@@ -46,7 +46,7 @@ const CartQuantityButton = ({ productid }) => {
     }
     
     try {
-      await axios.put(`http://localhost:3000/cart/${productid}`, {
+      await axios.put(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/cart/${productid}`, {
         userid,
         productid,
         quantity: newQuantity
@@ -60,7 +60,7 @@ const CartQuantityButton = ({ productid }) => {
 
   const addToCart = async (newQuantity) => {
     try {
-      await axios.post('http://localhost:3000/cart/add', {
+      await axios.post(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/cart/add`, {
         userid,
         productid,
         quantity: newQuantity
@@ -74,7 +74,7 @@ const CartQuantityButton = ({ productid }) => {
 
   const deleteFromCart = async () => {
     try {
-      await axios.delete(`http://localhost:3000/cart/${productid}`, {
+      await axios.delete(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/cart/${productid}`, {
         withCredentials: true
       });
     } catch (error) {

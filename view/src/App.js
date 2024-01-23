@@ -27,7 +27,7 @@ const App = () => {
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/check-auth', { withCredentials: true });
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/check-auth`, { withCredentials: true });
         if(response.data.isAuthenticated) {
           dispatch(loginSuccess(response.data.user.name, response.data.user.userid));
         } else {
@@ -61,6 +61,12 @@ const App = () => {
     setAuthToken(null);
     dispatch(logout());
   };
+
+  const port = process.env.REACT_APP_LOCAL_PORT;
+const url = `http://localhost:${port}/products`;
+console.log("Request URL:", url);
+
+
 
   return (
     <Provider store={store}>

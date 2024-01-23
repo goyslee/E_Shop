@@ -21,7 +21,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/products/${productid}`);
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/products/${productid}`);
         console.log(productid)
         if (response && response.data) {
           setProduct(response.data);

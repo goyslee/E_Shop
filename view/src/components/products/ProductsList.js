@@ -19,7 +19,7 @@ export default function ProductList() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`http://localhost:3000/products`);
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/products`);
         setProducts(response.data);
         setIsLoading(false);
       } catch (err) {

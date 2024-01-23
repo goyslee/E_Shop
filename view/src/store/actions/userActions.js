@@ -1,4 +1,3 @@
-// Action Types
 //view\src\store\actions\userActions.js
 export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';

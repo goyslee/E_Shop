@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
+
 import './OrderHistory.css';
 
 export default function OrderHistory() {
@@ -18,7 +19,7 @@ export default function OrderHistory() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/orders', { withCredentials: true });
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/orders`, { withCredentials: true });
         setOrders(response.data);
       } catch (err) {
         setError(err.message);

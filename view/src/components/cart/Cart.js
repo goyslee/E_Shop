@@ -1,52 +1,33 @@
 // Cart.js
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCartItems, removeAllFromCart, updateCartItemQuantity } from '../../store/actions/cartActions';
 import CartQuantityButton from './CartQuantityButton';
+import { useNavigate } from 'react-router-dom';
 import AuthCheck from '../auth/AuthCheck';
 import './Cart.css';
 
 const Cart = () => {
-  const { userid, isAuthenticated } = useSelector(state => {
-    console.log('Redux State in Cart:', state); // Add this line
-    return state.auth;
-  });
-  
-  const [cartItems, setCartItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector(state => state.auth);
+  const { cartItems, loading, error } = useSelector(state => state.cart);
 
   useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/cart', { withCredentials: true });
-        setCartItems(response.data.cartItems);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     if (isAuthenticated) {
-      fetchCartItems();
+      dispatch(fetchCartItems());
     }
-  }, [isAuthenticated, userid]);
+  }, [isAuthenticated, dispatch]);
 
-  const handleRemoveAll = async (productId) => {
+  const handleRemoveAll = productId => {
     const isConfirmed = window.confirm("Are you sure you want to remove all of these items?");
     if (isConfirmed) {
-      try {
-        await axios.delete(`http://localhost:3000/cart/removeAll/${productId}`, { withCredentials: true });
-        setCartItems(prevCartItems => prevCartItems.filter(item => item.productid !== productId));
-      } catch (err) {
-        setError(err.message);
-      }
+      dispatch(removeAllFromCart(productId));
     }
   };
 
   const handleQuantityChange = (productId, newQuantity) => {
-    setCartItems(prevCartItems => prevCartItems.map(item => item.productid === productId ? { ...item, quantity: newQuantity } : item));
+    dispatch(updateCartItemQuantity(productId, newQuantity));
   };
 
   const renderCartItems = () => cartItems.map(item => (
@@ -57,7 +38,6 @@ const Cart = () => {
         <span className="cart-item-price"> - £{item.price} </span>
         <button className="remove-all-button" onClick={() => handleRemoveAll(item.productid)}>Remove All</button>
         <CartQuantityButton
-          userid={userid}
           productid={item.productid}
           initialQuantity={item.quantity}
           onQuantityChange={handleQuantityChange}
@@ -67,15 +47,10 @@ const Cart = () => {
   ));
 
   if (!isAuthenticated) {
-    return (
-      <div>
-        <AuthCheck />
-        <p>Please log in to view your cart.</p>
-      </div>
-    );
+    return <div><AuthCheck /><p>Please log in to view your cart.</p></div>;
   }
 
-  if (isLoading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -86,7 +61,14 @@ const Cart = () => {
   return (
     <div className="cart-container">
       <h2 className="cart-header">Your Cart</h2>
-      {cartItems.length === 0 ? <p>Your cart is empty</p> : <ul className="cart-item-list">{renderCartItems()}</ul>}
+      {cartItems.length === 0 ? (
+        <p>Your cart is empty</p>
+      ) : (
+        <ul className="cart-item-list">{renderCartItems()}</ul>
+      )}
+      <button onClick={() => navigate('/checkout')} className="remove-all-button">
+        Proceed to Checkout
+      </button>
     </div>
   );
 };
