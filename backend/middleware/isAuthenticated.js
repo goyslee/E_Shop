@@ -1,6 +1,7 @@
 // isAuthenticated.js
 const isAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
+        console.log('Authenticated? ', req.isAuthenticated())  
         return next();
     }
     // If the user is not authenticated, you can redirect or send an appropriate response

@@ -23,10 +23,11 @@ const initializePassport = (passport) => {
                 }
 
                 const user = res.rows[0];
+                console.log('The user is in localstrtaegy:', user)
                 const match = await bcrypt.compare(password, user.password);
 
                 if (match) {
-                    return done (null, { ...user, userid: user.userid, email: user.email });
+                    return done (null, { ...user, userid: user.userid, email: user.email, username: user.name  });
                 } else {
                     return done(null, false, { message: 'Incorrect password.' });
                 }
@@ -58,7 +59,8 @@ const initializePassport = (passport) => {
 
       // Include userid in the user object
       if (user) {
-        return done(null, { ...user, userid: user.userid, email: user.email });
+        console.log('The user is in googlestrategy:', user)
+        return done(null, { ...user, userid: user.userid, email: user.email, username: user.name });
         
       } else {
         return done(null, false, { message: 'Unable to retrieve user id.' });

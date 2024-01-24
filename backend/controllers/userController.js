@@ -49,11 +49,11 @@ const register = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  console.log(`USERID: ${req.params.userid}`)
-  const userid  = req.params.userid;
+  console.log(`USERID: ${req.user.userid}`)
+  const userid  = req.user.userid;
   try {
     // Check if req.user exists and if the userid matches the requested userid
-    if (!req.params || parseInt(req.params.userid) !== parseInt(userid)) {
+    if (!req.params || parseInt(req.user.userid) !== parseInt(userid)) {
       return res.status(403).send("Not authorized to view other users' accounts");
     }
     const result = await pool.query('SELECT name, email, address, phonenumber, userid FROM users WHERE userid = $1', [userid]);
@@ -70,7 +70,7 @@ const getUserById = async (req, res) => {
 
 
 const updateUser = async (req, res) => {
-  const userid  = req.params.userid;
+  const userid  = req.user.userid;
   const { name, email, password, address, phonenumber } = req.body;
 
   if (!userid) {
@@ -78,7 +78,7 @@ const updateUser = async (req, res) => {
   }
 
   try {
-    if (!req.params || parseInt(req.params.userid) !== parseInt(userid)) {
+    if (!req.params || parseInt(req.user.userid) !== parseInt(userid)) {
       return res.status(403).send("Not authorized to change other users' accounts");
     }
 

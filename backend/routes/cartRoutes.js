@@ -5,12 +5,12 @@ const cartController = require('../controllers/cartController');
 const isAuthenticated = require('../middleware/isAuthenticated');
 const isAuthorised = require('../middleware/isAuthorised');
 
-router.post('/cart/add', cartController.addItemToCart);
-router.put('/cart/:itemId', cartController.updateCartItem);
-router.delete('/cart/:itemId', cartController.deleteCartItem);
-router.delete('/cart/removeAll/:productId', cartController.deleteAllOfItem);
-router.get('/cart', cartController.showCart);
-router.get('/cart/quantity/:productid', cartController.getCartItemQuantity);
+router.post('/cart/add',isAuthenticated, cartController.addItemToCart);
+router.put('/cart/:itemId',isAuthenticated, cartController.updateCartItem);
+router.delete('/cart/:itemId',isAuthenticated, cartController.deleteCartItem);
+router.delete('/cart/removeAll/:productId',isAuthenticated, cartController.deleteAllOfItem);
+router.get('/cart',isAuthenticated, cartController.showCart);
+router.get('/cart/quantity/:productid',isAuthenticated, cartController.getCartItemQuantity);
 
 
 module.exports = router;

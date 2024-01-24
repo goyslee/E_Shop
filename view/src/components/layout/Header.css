@@ -1,18 +1,32 @@
 /* view/src/components/layout/Header.css */
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Ensure vertical alignment */
+  justify-content: space-between; /* Space out brand and nav sections */
   padding: 0.5rem 1rem;
   background-color: #333;
   color: #f8f8f8;
 }
 
-.navbar-nav {
-  list-style: none;
+.navbar-brand {
+  flex-grow: 1; /* Allow the brand to grow as needed */
+}
+
+.navbar-brand .brand-link {
   display: flex;
+  align-items: center; /* Align brand link items (like img) vertically */
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center; /* Align nav items vertically */
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .navbar-nav li {
@@ -31,7 +45,7 @@
 
 .login-section {
   display: flex;
-  align-items: center;
+  align-items: center; /* Align login section vertically */
 }
 
 .navbar-text {
@@ -104,6 +118,7 @@
   transform: scale(1.1);
   color: #232323;
 }
+
 
 .active-nav-link {
   background-color: darkcyan;

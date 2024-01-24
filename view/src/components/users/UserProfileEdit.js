@@ -21,7 +21,7 @@ const UserProfileEdit = ({ userDetails, onEditComplete, userid, onUserDetailsUpd
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.put(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/${userid}`, formData);
+    const response = await axios.put(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/${userid}`, formData, {withCredentials: true});
     if (response.data) {
       onUserDetailsUpdate(response.data); // Update the parent component's state
       onEditComplete(); // Switch back to view mode

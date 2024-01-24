@@ -1,7 +1,7 @@
 // Header.js
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaUser, FaShoppingCart, FaBoxOpen } from 'react-icons/fa';
+import { FaUser, FaShoppingCart } from 'react-icons/fa';
 import './Header.css';
 import { useSelector } from 'react-redux';
 
@@ -16,43 +16,41 @@ const Header = ({ isAuthenticated, username }) => {
     return isActive ? 'nav-link navbar-user active-nav-link-user' : 'nav-link navbar-user';
   };
 
-  
-
 
   return (
-    <header className="navbar">
-      <nav>
-        <ul className="navbar-nav">
-          <li>
-            <div className="login-section">
-            <NavLink to="/products" className={getNavLinkClass}>
-              <FaBoxOpen />  Products
-              </NavLink>
-            </div>  
-          </li>
-          {/* Other navigation links */}
-        </ul>
-      </nav>
-      <div className="login-section">
-        {!isAuthenticated ? (
-          <NavLink to="/login" className={getNavLinkClass}>Login</NavLink>
-        ) : (
-          <>
-            <NavLink to={`/user-profile/${userid}`} className={getNavLinkClassForUser}>
-              <FaUser />  {username}
-            </NavLink>
-            <NavLink to="/cart" className={getNavLinkClass}>
-              <FaShoppingCart />  Cart
-              </NavLink>
-             <NavLink to="/order-history" className={getNavLinkClass}>
-               Order History
-            </NavLink>  
-            <NavLink to="/logout" className='logout-button'>Logout</NavLink>
-          </>
-        )}
+  <header className="navbar">
+    <nav>
+      {/* Navbar Brand Section */}
+      <div className="navbar-brand">
+        <NavLink to="/" className="brand-link">
+          <img src="minta3.png" alt="Brand Logo" width="50"/>
+          <span> &nbsp; Shop</span>
+        </NavLink>
       </div>
-    </header>
-  );
+
+      {/* Navigation Links */}
+    
+    </nav>
+    <div className="login-section">
+      {!isAuthenticated ? (
+        <NavLink to="/login" className={getNavLinkClass}>Login</NavLink>
+      ) : (
+        <>
+          <NavLink to={`/user-profile/${userid}`} className={getNavLinkClassForUser}>
+            <FaUser />&nbsp; {username}
+          </NavLink>
+          <NavLink to="/cart" className={getNavLinkClass}>
+            <FaShoppingCart /> &nbsp;
+          </NavLink>
+          <NavLink to="/order-history" className={getNavLinkClass}>
+            Order History
+          </NavLink>
+          <NavLink to="/logout" className='logout-button'>Logout</NavLink>
+        </>
+      )}
+    </div>
+  </header>
+);
 };
 
 export default Header;

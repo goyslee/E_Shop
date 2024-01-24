@@ -40,10 +40,10 @@ const CheckoutForm = () => {
         const response = await axios.post(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/${userid}/checkout`, {
           paymentMethodId: paymentMethod.id,
           amount: totalAmount
-        });
+          
+        },{withCredentials: true});
 
-
-        const { clientSecret } = response.data;
+     const { clientSecret } = response.data;
        if (clientSecret) { // Check if clientSecret exists before using it
          const result = await stripe.confirmCardPayment(clientSecret.toString());
 

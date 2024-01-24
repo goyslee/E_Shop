@@ -3,8 +3,9 @@ const pool = require('../config/dbConfig');
 const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
 const checkout = async (req, res) => {
-  const userid = req.params.userid;
-  const { paymentMethodId, amount } = req.body;
+  console.log(req.user)
+  const {userid, name} = req.user;
+  const { paymentMethodId, amount, username } = req.body;
 
   try {
     // Retrieve the user's cart
@@ -29,7 +30,9 @@ const checkout = async (req, res) => {
       automatic_payment_methods: {
         enabled: true,
       },
-      description: `Order for user ${userid}`
+       description: `Order for user ${userid}`,
+      customer: req.user.name.toString(),
+       created: getUKDateTime()
     });
 
     // Create an order in the database
@@ -68,6 +71,11 @@ async function getProductPrice(productid) {
   } else {
     throw new Error('Product not found');
   }
+}
+
+function getUKDateTime() {
+  const options = { timeZone: 'Europe/London', hour12: false };
+  return new Date().toLocaleString('en-UK', options);
 }
 
 module.exports = {

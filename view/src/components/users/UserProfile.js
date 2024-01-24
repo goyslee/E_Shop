@@ -22,9 +22,8 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/user-profile/${userid}`);
-        console.log('Axios default headers:', axios.defaults.headers);
-        console.log(typeof response.data);
+        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/user-profile/${userid}`, {
+        withCredentials: true});
         setUserDetails(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
