@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: [`http://localhost:${local_port}`, 'http://localhost:3000', 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
+  origin: [`http://localhost:${local_port}`, `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));

@@ -4,7 +4,7 @@ const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
 const checkout = async (req, res) => {
   console.log(req.user)
-  const {userid, name} = req.user;
+  const {userid, email} = req.user;
   const { paymentMethodId, amount, username } = req.body;
 
   try {
@@ -30,9 +30,8 @@ const checkout = async (req, res) => {
       automatic_payment_methods: {
         enabled: true,
       },
+      receipt_email: email,
        description: `Order for user ${userid}`,
-      customer: req.user.name.toString(),
-       created: getUKDateTime()
     });
 
     // Create an order in the database
