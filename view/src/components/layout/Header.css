@@ -119,6 +119,15 @@
   color: #232323;
 }
 
+.nav-common-style {
+  color: #f8f8f8;
+  text-decoration: none;
+  padding: 0.5rem 1rem; /* Adjust padding as needed */
+  display: flex;
+  align-items: center;
+}
+
+
 
 .active-nav-link {
   background-color: darkcyan;
@@ -137,6 +146,16 @@
   transition: none;
 }
 
+.active-brand-link {
+  background-color: darkcyan;
+   display: flex;
+  align-items: center; /* Align brand link items (like img) vertically */
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 2rem; 
+  text-transform: uppercase;
+}
 
 @keyframes flashingColor {
   0%, 100% {

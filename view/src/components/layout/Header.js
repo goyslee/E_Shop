@@ -21,12 +21,14 @@ const Header = ({ isAuthenticated, username }) => {
   <header className="navbar">
     <nav>
       {/* Navbar Brand Section */}
-      <div className="navbar-brand">
-        <NavLink to="/" className="brand-link">
-          <img src="minta3.png" alt="Brand Logo" width="50"/>
-          <span> &nbsp; Shop</span>
-        </NavLink>
-      </div>
+       <div className="navbar-brand">
+          <NavLink to="/products" className="brand-link">
+            <img src="minta3.png" alt="Brand Logo" width="50"/>
+             <NavLink to='/products' className={getNavLinkClass}>
+            SHOP
+          </NavLink>
+          </NavLink>
+          </div>
 
       {/* Navigation Links */}
     

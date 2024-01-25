@@ -1,0 +1,28 @@
+/* view\src\components\products\ProductDetails.css */
+.product {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.product:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.product img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.product h3 {
+  margin-top: 10px;
+  color: #333;
+}
+
+.product p {
+  color: #666;
+  font-size: 0.9rem;
+}

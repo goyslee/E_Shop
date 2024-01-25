@@ -1,5 +1,6 @@
 //view\src\components\products\ProductDetails.js
 import React from 'react';
+import './ProductDetails.css'
 
 export default function ProductDetails({ product }) {
   if (!product) {
