@@ -15,6 +15,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const checkoutRoutes = require('./routes/checkoutRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authController = require('./controllers/authController');
+const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
 
 const app = express();
@@ -23,9 +24,14 @@ const port = process.env.PORT || local_port ;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
 app.use(session({
-  secret: process.env.SECRET,
-  resave: false,
-  saveUninitialized: false
+    store: new pgSession({
+        pool : pool,                // Connection pool
+        tableName : 'session'       // Use this table to store sessions
+    }),
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));
 app.use(flash());
 app.use(passport.initialize());

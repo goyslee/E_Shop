@@ -3,14 +3,11 @@ const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET;
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-// const FacebookStrategy = require('passport-facebook').Strategy;
 const bcrypt = require('bcrypt');
 const pool = require('../config/dbConfig');
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-// const FACEBOOK_APP_ID = 'Your-Facebook-App-ID';
-// const FACEBOOK_APP_SECRET = 'Your-Facebook-App-Secret';
 
 const initializePassport = (passport) => {
     passport.use(new LocalStrategy(
@@ -73,30 +70,6 @@ const initializePassport = (passport) => {
 ));
 
 
-
-    // passport.use(new FacebookStrategy({
-    //     clientID: process.env.FACEBOOK_APP_ID,
-    //     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    //     callbackURL: '/auth/facebook/callback',
-    //     profileFields: ['id', 'emails', 'name']
-    // },
-    // async (accessToken, refreshToken, profile, done) => {
-    //     const email = profile.emails[0].value;
-    //     const user = (await pool.query('SELECT * FROM Users WHERE email = $1', [email])).rows[0];
-
-    //     if (user) {
-    //         return done(null, user);
-    //     } else {
-    //         // Create new user with Facebook profile info
-    //         const newUser = (await pool.query(
-    //             'INSERT INTO Users (name, email, refresh_token) VALUES ($1, $2, $3) RETURNING *',
-    //             [`${profile.name.givenName} ${profile.name.familyName}`, email, profile.id]
-    //         )).rows[0];
-
-    //         return done(null, newUser);
-    //     }
-    // }));
-
    passport.serializeUser((user, done) => {
   done(null, user.userid);
 });
@@ -138,13 +111,23 @@ const logout = (req, res, next) => {
         return res.status(400).send('No user to log out.');
     }
 
-    req.logout((err) => {
+    // Destroy the session on the server-side
+    req.session.destroy((err) => { 
         if (err) { 
             return res.status(500).json({ message: 'Logout failed' });
-        }
-        res.status(200).json({ message: 'Logged out successfully' });
+        } 
+
+        // Remove the session record from the database
+        pool.query('DELETE FROM session WHERE sid = $1', [req.sessionID], (err, result) => {
+            if (err) {
+                console.error('Error deleting session from database:', err);
+                // You might want to handle this error differently in production
+            }
+            res.status(200).json({ message: 'Logged out successfully' });
+        });
     });
 };
+
 
 const authenticateToken = (req, res, next) => {
   const token = req.header('Authorization');
