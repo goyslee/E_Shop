@@ -14,8 +14,6 @@ const UserProfile = () => {
     return state.auth;
   });
 
-  console.log(`User Id is: ${userid}`); // Check if 'userid' is logged correctly
-
   const [userDetails, setUserDetails] = useState(null);
   const [editMode, setEditMode] = useState(false); // State to control edit mode
 

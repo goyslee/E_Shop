@@ -22,9 +22,7 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       const url = `http://localhost:${process.env.REACT_APP_LOCAL_PORT}/register`;
-      console.log("URL:", url);
       const response = await axios.post(url, formData);
-      console.log("Form Data:", formData);
       console.log(response.data);
       navigate('/login');
     } catch (error) {

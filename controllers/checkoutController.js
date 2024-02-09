@@ -3,7 +3,6 @@ const pool = require('../config/dbConfig');
 const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
 const checkout = async (req, res) => {
-  console.log(req.user)
   const {userid, email} = req.user;
   const { paymentMethodId, amount, username } = req.body;
 

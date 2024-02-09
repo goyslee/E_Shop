@@ -17,7 +17,6 @@ const ProfileCompletion = () => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/${userid}`);
-        console.log('Axios default headers:', axios.defaults.headers);
         setDetails({
           username: response.data.name, // Update this based on your actual user object structure
           phonenumber: '',

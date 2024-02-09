@@ -56,7 +56,7 @@ const initializePassport = (passport) => {
 
       // Include userid in the user object
       if (user) {
-        console.log('The user is in googlestrategy:', user)
+  
         return done(null, { ...user, userid: user.userid, email: user.email, username: user.name });
         
       } else {

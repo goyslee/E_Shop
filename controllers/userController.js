@@ -49,7 +49,6 @@ const register = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  console.log(`USERID: ${req.user.userid}`)
   const userid  = req.user.userid;
   try {
     // Check if req.user exists and if the userid matches the requested userid
