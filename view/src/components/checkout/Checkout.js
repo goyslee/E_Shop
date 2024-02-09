@@ -75,7 +75,7 @@ const CheckoutForm = () => {
             <img src={item.image_url} alt={item.name} className="cart-item-image" />
             <div className="cart-item-details">
               <span className="cart-item-name">{item.name}</span>
-              <span className="cart-item-price">£{item.price} x {item.quantity}</span>
+              <span className="cart-item-price">  - <b>£{item.price}</b>  ({item.quantity})</span>
             </div>
           </div>
         ))}

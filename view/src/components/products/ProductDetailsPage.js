@@ -54,7 +54,9 @@ const ProductDetailsPage = () => {
       <p className="price">Price: ${product.price}</p>
       {product.image_url && <img src={product.image_url} alt={product.name} className="product-image" />}
       {/* CartQuantityButton component */}
-      <CartQuantityButton userid={userid} productid={numericProductId} />
+      <div className="cart-button-wrapper">
+        <CartQuantityButton userid={userid} productid={numericProductId} />
+      </div>
     </div>
   );
 }

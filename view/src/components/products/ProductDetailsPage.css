@@ -45,6 +45,14 @@
   font-weight: bold;
 }
 
+.cart-button-wrapper {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;    /* Centers vertically (if needed) */
+    width: 100%;           /* Occupy full available width */
+    margin-top: 20px;      /* Add some spacing from other elements */
+} 
+
 @media (max-width: 600px) {
   .product-details-container {
     padding: 20px;

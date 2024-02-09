@@ -35,7 +35,11 @@ export default function ProductList() {
   if (error) return <div>Error: {error}</div>;
 
   return (
+    <div>
+       <h1 className="product-header">Welcome to E-shop!</h1>
+      <p>You can browse our products here. We hope you will enjoy shopping with us today!</p>
     <div className="product-list">
+     
       {products.length > 0 ? (
         products.map(product => (
           <Link to={`/product/${product.productid}`} key={product.productid}>
@@ -45,6 +49,7 @@ export default function ProductList() {
       ) : (
         <div>No products found</div>
       )}
-    </div>
+      </div>
+      </div>
   );
 }

@@ -50,7 +50,7 @@ export default function OrderHistory() {
         <div key={order.orderid} className="order-card">
           <h3>Order ID: {order.orderid}</h3>
           <p>Date: {new Date(order.orderdate).toLocaleDateString()}</p>
-          <p>Total Price: ${order.totalprice}</p>
+          <p>Total Price: <b>£{order.totalprice}</b></p>
           <p>Shipping Address: {order.shippingaddress}</p>
           <p>Number of Items: {order.orderdetails ? order.orderdetails.length : 0}</p>
           {order.orderdetails && (

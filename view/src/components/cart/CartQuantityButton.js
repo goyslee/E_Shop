@@ -83,23 +83,31 @@ const CartQuantityButton = ({ productid }) => {
   };
 
   const increment = () => {
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
-    if (quantity === 0) {
-      addToCart(newQuantity);
+    if (isAuthenticated) { // Authentication Check
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
+      if (quantity === 0) {
+        addToCart(newQuantity);
+      } else {
+        updateCart(newQuantity);
+      }
     } else {
-      updateCart(newQuantity);
+      alert("You must log in to place items in the cart!");
     }
   };
 
   const decrement = () => {
-    if (quantity > 1) {
-      const newQuantity = quantity - 1;
-      setQuantity(newQuantity);
-      updateCart(newQuantity);
-    } else if (quantity === 1) {
-      deleteFromCart();
-      setQuantity(0);
+    if (isAuthenticated) {  // Authentication Check
+      if (quantity > 1) {
+        const newQuantity = quantity - 1;
+        setQuantity(newQuantity);
+        updateCart(newQuantity);
+      } else if (quantity === 1) {
+        deleteFromCart();
+        setQuantity(0);
+      }
+    } else {
+      alert("You must log in to remove items from the cart!");
     }
   };
 
