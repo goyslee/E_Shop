@@ -25,7 +25,7 @@ const checkout = async (req, res) => {
       currency: 'gbp',
       payment_method: paymentMethodId,
       confirm: true,
-      return_url: `http://localhost:${process.env.REACT_APP_LOCAL_PORT}`,
+      return_url: `${process.env.REACT_APP_FRONTEND_URL}`,
       automatic_payment_methods: {
         enabled: true,
       },

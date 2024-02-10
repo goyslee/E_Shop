@@ -16,7 +16,7 @@ const ProfileCompletion = () => {
     // Fetch user data based on userid and set it in the state
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/users/${userid}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/${userid}`);
         setDetails({
           username: response.data.name, // Update this based on your actual user object structure
           phonenumber: '',
@@ -43,7 +43,7 @@ const ProfileCompletion = () => {
       userid: userid
     };
     try {
-      await axios.post(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/update-user-details`, userUpdateData);
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/update-user-details`, userUpdateData);
       navigate('/products');
     } catch (error) {
       console.error('Error updating user details:', error);

@@ -62,8 +62,7 @@ const App = () => {
     dispatch(logout());
   };
 
-  const port = process.env.REACT_APP_LOCAL_PORT;
-const url = `http://localhost:${port}/products`;
+const url = `${process.env.REACT_APP_FRONTEND_URL}/products`;
 console.log("Request URL:", url);
 
 

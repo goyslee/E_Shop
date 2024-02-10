@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: [`http://localhost:${local_port}`, `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
+  origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
@@ -80,9 +80,9 @@ app.get('/check-auth', (req, res) => {
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   if (req.user && req.user.address) {
-    res.redirect(`${process.env.LOCALHOST}/products`);
+    res.redirect(`${process.env.REACT_APP_FRONTEND_URL}/products`);
   } else {
-    res.redirect(`${process.env.LOCALHOST}/profilecompletion/${req.user.userid}`);
+    res.redirect(`${process.env.REACT_APP_FRONTEND_URL}/profilecompletion/${req.user.userid}`);
   }
 });
 

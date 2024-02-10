@@ -37,7 +37,7 @@ const CheckoutForm = () => {
       console.log('[error]', error);
     } else {
      try {
-        const response = await axios.post(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/${userid}/checkout`, {
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/${userid}/checkout`, {
           paymentMethodId: paymentMethod.id,
           amount: totalAmount
           
