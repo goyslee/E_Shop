@@ -21,8 +21,8 @@ if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ debug: true })
 }
 const app = express();
-const local_port = 4242
-const port = process.env.PORT || local_port ;
+
+const port = process.env.PORT;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
 
