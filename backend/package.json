@@ -20,6 +20,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/register": "^7.22.15",
     "@stripe/stripe-js": "1.21.1",
+    "@supabase/supabase-js": "^2.39.3",
     "axios": "^1.6.2",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
