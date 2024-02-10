@@ -17,11 +17,15 @@ const orderRoutes = require('./routes/orderRoutes');
 const authController = require('./controllers/authController');
 const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
-
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config({ debug: true })
+}
 const app = express();
 const local_port = 4242
 const port = process.env.PORT || local_port ;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
+
+
 
 app.use(session({
     store: new pgSession({
@@ -76,9 +80,9 @@ app.get('/check-auth', (req, res) => {
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   if (req.user && req.user.address) {
-    res.redirect('http://localhost:3000/products');
+    res.redirect(`${process.env.LOCALHOST}/products`);
   } else {
-    res.redirect(`http://localhost:3000/profilecompletion/${req.user.userid}`);
+    res.redirect(`${process.env.LOCALHOST}/profilecompletion/${req.user.userid}`);
   }
 });
 

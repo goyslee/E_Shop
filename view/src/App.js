@@ -27,7 +27,7 @@ const App = () => {
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
-        const response = await axios.get(`http://localhost:${process.env.REACT_APP_LOCAL_PORT}/check-auth`, { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/check-auth`, { withCredentials: true })
         if(response.data.isAuthenticated) {
           dispatch(loginSuccess(response.data.user.name, response.data.user.userid));
         } else {
