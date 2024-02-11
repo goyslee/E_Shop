@@ -60,6 +60,8 @@ app.use(function (req, res, next) {
     `${process.env.REACT_APP_FRONTEND_URL}`,
     `${process.env.REACT_APP_BACKEND_URL}`,
     `${process.env.LOCALHOST}`,
+    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
     'https://merchant-ui-api.stripe.com/elements/wallet-config');
   res.header("Access-Control-Allow-Methods",
     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
