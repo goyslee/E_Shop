@@ -28,8 +28,11 @@ const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 app.use(cors());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin",
-    'https://e-shop-backend-plfz.onrender.com',
-    'https://e-shop-frontend-8ylf.onrender.com',
+    `${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`,
+    `${process.env.LOCALHOST}`,
+    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
     'https://merchant-ui-api.stripe.com/elements/wallet-config');
   res.header("Access-Control-Allow-Methods",
     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
@@ -42,6 +45,11 @@ app.use(function (req, res, next) {
   next()
 })
 
+console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`,
+    `${process.env.LOCALHOST}`,
+    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`)
 
 app.use(session({
     store: new pgSession({
