@@ -7,7 +7,7 @@ import { fetchCartItems } from '../store/actions/cartActions'; // Import the act
 
 const login = async (credentials) => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, credentials, { withCredentials: true });
+    const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}login`, credentials, { withCredentials: true });
     const { name, userid, email } = response.data.user;
     if (name && userid !== undefined) {
       console.log(store.dispatch(loginSuccess(name, userid, email)))
@@ -24,7 +24,7 @@ const login = async (credentials) => {
 
 const checkAuth = async () => {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/check-auth`, { withCredentials: true });
+    const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}check-auth`, { withCredentials: true });
     const userData = response.data.user;
     if (response.data.isAuthenticated && userData && userData.email !== undefined) {
       store.dispatch(loginSuccess(userData.name, userData.userid, userData.email));

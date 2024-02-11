@@ -19,7 +19,7 @@ export default function OrderHistory() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/orders`, { withCredentials: true });
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}orders`, { withCredentials: true });
         setOrders(response.data);
       } catch (err) {
         setError(err.message);

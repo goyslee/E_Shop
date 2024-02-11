@@ -9,7 +9,7 @@ const LogoutPage = ({ onLogout }) => {
 
  const handleLogout = async () => {
     try {
-        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/logout`, {}, { withCredentials: true });
+        const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}logout`, {}, { withCredentials: true });
         if (response.status === 200) {
             onLogout();
           navigate('/login');
