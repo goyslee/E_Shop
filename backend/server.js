@@ -25,26 +25,6 @@ const app = express();
 const port = process.env.PORT;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
-// app.use(cors());
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin",
-//     `${process.env.REACT_APP_FRONTEND_URL}`,
-//     `${process.env.REACT_APP_BACKEND_URL}`,
-//     `${process.env.LOCALHOST}`,
-//     `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-//     `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-//     'https://merchant-ui-api.stripe.com/elements/wallet-config');
-//   res.header("Access-Control-Allow-Methods",
-//     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-//   )
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-//   )
-//   res.header("Access-Control-Allow-Credentials", true);
-//   next()
-// })
-
 app.use(function (req, res, next) {
   const origin = req.headers.origin; 
 
@@ -81,12 +61,13 @@ console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
 app.use(session({
     store: new pgSession({
         pool : pool,                // Connection pool
-        tableName : 'session'       // Use this table to store sessions
+        tableName: 'session',      // Use this table to store sessions
+        conString: process.env.DATABASE_URL
     }),
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' } // 30 days
 }));
 app.use(flash());
 app.use(passport.initialize());
@@ -98,12 +79,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   next();
 });
-
-// app.use(cors({
-//   origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.REACT_APP_BACKEND_URL}` `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   credentials: true,
-// }));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 authController.initializePassport(passport);
