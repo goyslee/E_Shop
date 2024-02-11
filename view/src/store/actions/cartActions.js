@@ -36,7 +36,7 @@ export const deleteCartItem = productId => ({
 export const fetchCartItems = () => {
   return dispatch => {
     dispatch(fetchCartBegin());
-    return axios.get(`${process.env.REACT_APP_BACKEND_URL}cart`, { withCredentials: true })
+    return axios.get(`${process.env.REACT_APP_BACKEND_URL}/cart`, { withCredentials: true })
       .then(response => dispatch(fetchCartSuccess(response.data.cartItems)))
       .catch(error => dispatch(fetchCartFailure(error)));
   };
@@ -45,7 +45,7 @@ export const fetchCartItems = () => {
 export const removeAllFromCart = productId => {
   return async dispatch => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}cart/removeAll/${productId}`, { withCredentials: true });
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/cart/removeAll/${productId}`, { withCredentials: true });
       dispatch(deleteCartItem(productId));
     } catch (error) {
       console.error('Error removing items:', error);
@@ -56,7 +56,7 @@ export const removeAllFromCart = productId => {
 export const updateCartItemQuantity = (productId, newQuantity) => {
   return async dispatch => {
     try {
-      await axios.put(`${process.env.REACT_APP_BACKEND_URL}cart/${productId}`, { quantity: newQuantity }, { withCredentials: true });
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/cart/${productId}`, { quantity: newQuantity }, { withCredentials: true });
       dispatch(updateCartItem(productId, newQuantity));
     } catch (error) {
       console.error('Error updating cart item:', error);
@@ -68,7 +68,7 @@ export const updateCartItemQuantity = (productId, newQuantity) => {
 export const addToCart = (productId, quantity) => {
   return async dispatch => {
     try {
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}cart/add`, { productid: productId, quantity }, { withCredentials: true });
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/cart/add`, { productid: productId, quantity }, { withCredentials: true });
       dispatch({
         type: ADD_TO_CART,
         payload: { productId, quantity }
@@ -82,7 +82,7 @@ export const addToCart = (productId, quantity) => {
 export const removeFromCart = productId => {
   return async dispatch => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}cart/${productId}`, { withCredentials: true });
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/cart/${productId}`, { withCredentials: true });
       dispatch({
         type: REMOVE_FROM_CART,
         payload: { productId }

@@ -21,7 +21,7 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}register`;
+      const url = `${process.env.REACT_APP_BACKEND_URL}/register`;
       const response = await axios.post(url, formData);
       console.log(response.data);
       navigate('/login');
@@ -85,7 +85,7 @@ const RegisterPage = () => {
           required
         />
         <button type="submit">Register</button>
-         <a href={`${process.env.REACT_APP_FRONTEND_URL}auth/google`} className="google-auth-button">
+         <a href={`${process.env.REACT_APP_FRONTEND_URL}/auth/google`} className="google-auth-button">
           Register with Google
         </a>
          <h3>
