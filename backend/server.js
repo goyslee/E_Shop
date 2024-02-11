@@ -48,15 +48,29 @@ const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 app.use(function (req, res, next) {
   const origin = req.headers.origin; 
 
-  // Add a check here to validate 'origin' against a list of trusted origins
-  if (origin && [`https://e-shop-frontend-8ylf.onrender.com', 'https://other-allowed-site.com`].includes(origin)) { 
-    res.header("Access-Control-Allow-Origin", origin); // Reflect the origin back
+  console.log('Request Origin:', origin); // Debugging: Log the request's origin
+
+  // List of allowed origins
+  const allowedOrigins = [
+    'https://e-shop-frontend-8ylf.onrender.com',
+    'https://e-shop-backend-plfz.onrender.com',
+    'https://merchant-ui-api.stripe.com/elements/wallet-config',
+    `${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`
+  ];
+
+  if (allowedOrigins.includes(origin)) { 
+    console.log('Origin allowed:', origin); // Debugging: Confirm origin is allowed
+    res.header("Access-Control-Allow-Origin", origin);
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header("Access-Control-Allow-Credentials", true);
+  } else {
+    console.log('Origin not allowed:', origin); // Debugging: Log if origin is not allowed
   }
   next();
 });
+
 
 console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
     `${process.env.REACT_APP_BACKEND_URL}`,
