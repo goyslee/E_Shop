@@ -73,7 +73,7 @@ const LoginPage = () => {
         <button type="submit">Login</button>
       </form>
       <div className="google-login-button">
-        <a href={`${process.env.REACT_APP_FRONTEND_URL}/auth/google`}>
+        <a href={`${process.env.REACT_APP_BACKEND_URL}/auth/google`}>
           <span>Login with Google</span>
         </a>
       </div>
