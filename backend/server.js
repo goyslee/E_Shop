@@ -49,7 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
+  origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.REACT_APP_BACKEND_URL}` `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
@@ -143,5 +143,5 @@ app.post('/update-user-details', (req, res) => {
 // });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server is running on ${port}`);
 });
