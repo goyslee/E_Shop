@@ -25,7 +25,7 @@ const app = express();
 const port = process.env.PORT;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
-app.use(cors());
+// app.use(cors());
 // app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin",
 //     `${process.env.REACT_APP_FRONTEND_URL}`,
@@ -49,7 +49,7 @@ app.use(function (req, res, next) {
   const origin = req.headers.origin; 
 
   // Add a check here to validate 'origin' against a list of trusted origins
-  if (origin && ['https://e-shop-frontend-8ylf.onrender.com', 'https://other-allowed-site.com'].includes(origin)) { 
+  if (origin && [`https://e-shop-frontend-8ylf.onrender.com', 'https://other-allowed-site.com`].includes(origin)) { 
     res.header("Access-Control-Allow-Origin", origin); // Reflect the origin back
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT,DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
