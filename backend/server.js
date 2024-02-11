@@ -48,11 +48,28 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.REACT_APP_BACKEND_URL}` `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: [`${process.env.REACT_APP_FRONTEND_URL}`, `${process.env.REACT_APP_BACKEND_URL}` `${process.env.LOCALHOST}`, 'https://merchant-ui-api.stripe.com/elements/wallet-config','*'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   credentials: true,
+// }));
+
+app.use(cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin",
+    `${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`,
+    `${process.env.LOCALHOST}`,
+    'https://merchant-ui-api.stripe.com/elements/wallet-config');
+  res.header("Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  )
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  )
+  next()
+})
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
