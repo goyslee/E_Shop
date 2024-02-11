@@ -33,6 +33,8 @@ app.use(function (req, res, next) {
     `${process.env.LOCALHOST}`,
     `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
     `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    'https://e-shop-backend-plfz.onrender.com',
+    'https://e-shop-frontend-8ylf.onrender.com',
     'https://merchant-ui-api.stripe.com/elements/wallet-config');
   res.header("Access-Control-Allow-Methods",
     "GET,HEAD,OPTIONS,POST,PUT,DELETE"
