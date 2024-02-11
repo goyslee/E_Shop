@@ -25,6 +25,25 @@ const app = express();
 const port = process.env.PORT;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 
+app.use(cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin",
+    `${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`,
+    `${process.env.LOCALHOST}`,
+    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    'https://merchant-ui-api.stripe.com/elements/wallet-config');
+  res.header("Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  )
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  )
+  res.header("Access-Control-Allow-Credentials", true);
+  next()
+})
 
 
 app.use(session({
@@ -53,27 +72,6 @@ app.use((req, res, next) => {
 //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   credentials: true,
 // }));
-
-app.use(cors());
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin",
-    `${process.env.REACT_APP_FRONTEND_URL}`,
-    `${process.env.REACT_APP_BACKEND_URL}`,
-    `${process.env.LOCALHOST}`,
-    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-    'https://merchant-ui-api.stripe.com/elements/wallet-config');
-  res.header("Access-Control-Allow-Methods",
-    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
-  )
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  )
-  res.header("Access-Control-Allow-Credentials", true);
-  next()
-})
-
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 authController.initializePassport(passport);
