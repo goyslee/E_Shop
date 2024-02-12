@@ -35,8 +35,8 @@ app.use(function (req, res, next) {
     'https://e-shop-frontend-8ylf.onrender.com',
     'https://e-shop-backend-plfz.onrender.com',
     'https://merchant-ui-api.stripe.com/elements/wallet-config',
-    `${process.env.FRONTEND_URL}`,
-    `${process.env.BACKEND_URL}`
+    `${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`
   ];
 
   if (allowedOrigins.includes(origin)) { 
@@ -52,11 +52,11 @@ app.use(function (req, res, next) {
 });
 
 
-console.log(`${process.env.FRONTEND_URL}`,
-    `${process.env.BACKEND_URL}`,
+console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
+    `${process.env.REACT_APP_BACKEND_URL}`,
     `${process.env.LOCALHOST}`,
-    `${process.env.FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-    `${process.env.BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`)
+    `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
+    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`)
 
 app.use(session({
     store: new pgSession({
@@ -105,9 +105,9 @@ app.get('/check-auth', (req, res) => {
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
   if (req.user && req.user.address) {
-    res.redirect(`${process.env.FRONTEND_URL}/products`);
+    res.redirect(`${process.env.REACT_APP_FRONTEND_URL}/products`);
   } else {
-    res.redirect(`${process.env.FRONTEND_URL}/profilecompletion/${req.user.userid}`);
+    res.redirect(`${process.env.REACT_APP_FRONTEND_URL}/profilecompletion/${req.user.userid}`);
   }
 });
 

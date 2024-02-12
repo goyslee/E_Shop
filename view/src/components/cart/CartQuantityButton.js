@@ -19,7 +19,7 @@ const CartQuantityButton = ({ productid }) => {
   useEffect(() => {
     const fetchCartQuantity = async () => {
       try {
-        const response = await axios.get(`${process.env.BACKEND_URL}/cart/quantity/${productid}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/cart/quantity/${productid}`, {
           withCredentials: true
         });
         setQuantity(response.data.quantity);
@@ -46,7 +46,7 @@ const CartQuantityButton = ({ productid }) => {
     }
     
     try {
-      await axios.put(`${process.env.BACKEND_URL}/cart/${productid}`, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/cart/${productid}`, {
         userid,
         productid,
         quantity: newQuantity
@@ -60,7 +60,7 @@ const CartQuantityButton = ({ productid }) => {
 
   const addToCart = async (newQuantity) => {
     try {
-      await axios.post(`${process.env.BACKEND_URL}/cart/add`, {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/cart/add`, {
         userid,
         productid,
         quantity: newQuantity
@@ -74,7 +74,7 @@ const CartQuantityButton = ({ productid }) => {
 
   const deleteFromCart = async () => {
     try {
-      await axios.delete(`${process.env.BACKEND_URL}/cart/${productid}`, {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/cart/${productid}`, {
         withCredentials: true
       });
     } catch (error) {
