@@ -25,7 +25,7 @@ const checkout = async (req, res) => {
       currency: 'gbp',
       payment_method: paymentMethodId,
       confirm: true,
-      return_url: `${process.env.FRONTEND_URL}`,
+      return_url: `${process.env.BACKEND_URL}`,
       automatic_payment_methods: {
         enabled: true,
       },

@@ -85,7 +85,7 @@ const RegisterPage = () => {
           required
         />
         <button type="submit">Register</button>
-         <a href={`${process.env.FRONTEND_URL}/auth/google`} className="google-auth-button">
+         <a href={`${process.env.BACKEND_URL}/auth/google`} className="google-auth-button">
           Register with Google
         </a>
          <h3>

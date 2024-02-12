@@ -62,7 +62,7 @@ const App = () => {
     dispatch(logout());
   };
 
-const url = `${process.env.FRONTEND_URL}/products`;
+const url = `${process.env.BACKEND_URL}/products`;
 console.log("Request URL:", url);
 
 
