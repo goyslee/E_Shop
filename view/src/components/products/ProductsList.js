@@ -19,7 +19,7 @@ export default function ProductList() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/products`);
+        const response = await axios.get(`${process.env.BACKEND_URL}/products`);
         setProducts(response.data);
         setIsLoading(false);
       } catch (err) {

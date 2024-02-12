@@ -20,7 +20,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/user-profile/${userid}`, {
+        const response = await axios.get(`${process.env.BACKEND_URL}/users/user-profile/${userid}`, {
         withCredentials: true});
         setUserDetails(response.data);
       } catch (error) {

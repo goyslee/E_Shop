@@ -27,7 +27,7 @@ const App = () => {
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/check-auth`, { withCredentials: true })
+        const response = await axios.get(`${process.env.BACKEND_URL}/check-auth`, { withCredentials: true })
         if(response.data.isAuthenticated) {
           dispatch(loginSuccess(response.data.user.name, response.data.user.userid));
         } else {
@@ -62,7 +62,7 @@ const App = () => {
     dispatch(logout());
   };
 
-const url = `${process.env.REACT_APP_FRONTEND_URL}/products`;
+const url = `${process.env.FRONTEND_URL}/products`;
 console.log("Request URL:", url);
 
 

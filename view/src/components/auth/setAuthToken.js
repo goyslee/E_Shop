@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Set the default base URL for your API
-axios.defaults.baseURL = `${process.env.REACT_APP_BACKEND_URL}`;
+axios.defaults.baseURL = `${process.env.BACKEND_URL}`;
 
 // Function to set the authentication token in the Axios header
 const setAuthToken = (token) => {
