@@ -67,7 +67,7 @@ app.use(session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'none' } // 30 days
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None' } // 30 days
 }));
 app.use(flash());
 app.use(passport.initialize());
