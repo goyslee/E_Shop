@@ -17,10 +17,21 @@ const orderRoutes = require('./routes/orderRoutes');
 const authController = require('./controllers/authController');
 const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
+
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://e-shop-pern-36c05addefa2.herokuapp.com/"
+    : "http://localhost:4242";
+
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ debug: true })
 }
+
+
+
 const app = express();
+
+
 
 const port = process.env.PORT;
 const swaggerDocument = YAML.load(fs.readFileSync('./swagger.yaml', 'utf8'));
