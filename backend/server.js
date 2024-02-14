@@ -18,10 +18,6 @@ const authController = require('./controllers/authController');
 const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
 
-const API_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://e-shop-pern-36c05addefa2.herokuapp.com/"
-    : "http://localhost:4242";
 
 if (process.env.NODE_ENV === 'development') {
   require('dotenv').config({ debug: true })
@@ -78,8 +74,14 @@ app.use(session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, secure: true, sameSite: 'None' } // 30 days
+    cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    secure: true,
+    sameSite: 'None',
+    domain: `${REACT_APP_BACKEND_URL}`
+  } // 30 days
 }));
+
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
