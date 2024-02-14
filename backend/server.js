@@ -78,7 +78,7 @@ app.use(session({
     maxAge: 30 * 24 * 60 * 60 * 1000,
     secure: true,
     sameSite: 'None',
-    domain: `${REACT_APP_BACKEND_URL}`
+    domain: `${process.env.REACT_APP_BACKEND_URL}`
   } // 30 days
 }));
 
