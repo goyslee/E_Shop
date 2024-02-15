@@ -75,19 +75,26 @@ app.use(cors(corsOptions));
 
 app.use(session({
     store: new pgSession({
-        pool : pool,                // Connection pool
-        tableName: 'session',      // Use this table to store sessions
-        conString: process.env.DATABASE_URL
+        pool: pool,
+        tableName: 'session',
+        conString: process.env.DATABASE_URL, // Make sure this is correctly pointing to your DB
     }),
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-    sameSite: process.env.NODE_ENV === "production" ? 'None' : 'Lax' // 'None' for cross-site in production, 'Lax' for development
-  } // 30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        secure: process.env.NODE_ENV === "production", // Only set to true if using HTTPS
+        sameSite: process.env.NODE_ENV === "production" ? 'None' : 'Lax', // Use 'None' for cross-site requests in production
+        httpOnly: true, // Prevents client-side JS from reading the cookie
+    }
 }));
+
+app.use((req, res, next) => {
+  console.log('HEADERS ARE:', req.headers);
+  next();
+});
+
 
 app.use(cookieParser()); 
 app.use(flash());
@@ -97,9 +104,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use((req, res, next) => {
-  next();
-});
+// app.use((req, res, next) => {
+//   next();
+// });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 authController.initializePassport(passport);
