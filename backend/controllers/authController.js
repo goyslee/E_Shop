@@ -20,7 +20,7 @@ const initializePassport = (passport) => {
                 }
 
                 const user = res.rows[0];
-                console.log('The user is in localstrtaegy:', user.userid)
+                console.log('The COOL user is in localstrtaegy:', user.userid)
                 const match = await bcrypt.compare(password, user.password);
 
                 if (match) {
