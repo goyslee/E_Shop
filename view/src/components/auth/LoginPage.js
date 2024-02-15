@@ -23,7 +23,7 @@ const LoginPage = () => {
   const googleLoginToken = getGoogleLoginToken();
   if (googleLoginToken) {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/google/callback?token=${googleLoginToken}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/google/callback?token=${googleLoginToken}`,  { withCredentials: true });
       const { name, userid, email } = response.data.user;
       dispatch(loginSuccess(name, userid, email));
       navigate('/products');

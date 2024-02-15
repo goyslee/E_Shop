@@ -21,8 +21,9 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/products/${productid}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/products/${productid}`,  { withCredentials: true });
         if (response && response.data) {
+          console.log('Setting product')
           setProduct(response.data);
         }
         setIsLoading(false);

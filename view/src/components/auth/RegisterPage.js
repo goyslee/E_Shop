@@ -22,7 +22,7 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       const url = `${process.env.REACT_APP_BACKEND_URL}/register`;
-      const response = await axios.post(url, formData);
+      const response = await axios.post(url, formData, { withCredentials: true });
       console.log(response.data);
       navigate('/login');
     } catch (error) {
