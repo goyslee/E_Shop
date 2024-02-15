@@ -17,6 +17,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const authController = require('./controllers/authController');
 const pgSession = require('connect-pg-simple')(session);
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 
 if (process.env.NODE_ENV === 'development') {
@@ -58,6 +59,12 @@ app.use(function (req, res, next) {
   next();
 });
 
+res.cookie('cookieName', 'value', { 
+    domain: 'https://e-shop-frontend-8ylf.onrender.com', 
+    path: '/',
+    httpOnly: true, // Likely want this for auth cookies
+    secure: true // Enforce HTTPS if in production 
+});
 
 console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
     `${process.env.REACT_APP_BACKEND_URL}`,
