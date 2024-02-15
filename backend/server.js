@@ -77,8 +77,7 @@ app.use(session({
     cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     secure: true,
-    sameSite: 'None',
-    domain: `${process.env.REACT_APP_BACKEND_URL}`
+    sameSite: 'None'
   } // 30 days
 }));
 
@@ -105,12 +104,6 @@ app.use(checkoutRoutes);
 app.use(orderRoutes);
 
 app.get('/', (req, res) => {
-  res.cookie('cookieName', 'value', { 
-    domain: 'https://e-shop-frontend-8ylf.onrender.com', 
-    path: '/',
-    httpOnly: true, // Likely want this for auth cookies
-    secure: true // Enforce HTTPS if in production 
-});
   res.send('Hello, this is the E-commerce API!');
 });
 
