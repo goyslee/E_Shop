@@ -1,8 +1,8 @@
 
-//controllers\userController.js
+// controllers/userController.js
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
-const pool = require('../config/dbConfig'); // Adjusted path
+const pool = require('../config/dbConfig'); // Ensure this path is correct
 const isAuthenticated = require('../middleware/isAuthenticated');
 
 const userSchema = Joi.object({
@@ -14,39 +14,49 @@ const userSchema = Joi.object({
 });
 
 const register = async (req, res) => {
+  // Log received data for debugging (remove sensitive data logging in production)
+  console.log('Received registration request:', req.body);
+
+  // Validate incoming data using Joi
   const { error, value } = userSchema.validate(req.body);
   if (error) {
+    console.error('Validation error:', error.details[0].message);
     return res.status(400).send(error.details[0].message);
   }
 
   try {
     const { name, email, password, address, phonenumber } = value;
+
+    // Check if user already exists
     const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (existingUser.rows.length > 0) {
       return res.status(400).send("User already exists.");
     }
 
+    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Insert new user into the database
     const newUser = await pool.query(
-      "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *", 
+      "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [name, email, hashedPassword, address, phonenumber]
     );
 
+    console.log('New user registered:', newUser.rows[0]); // Log for debugging
+
+    // Create a new cart for the user
     const userid = newUser.rows[0].userid;
+    await pool.query("INSERT INTO carts (userid, totalprice) VALUES ($1, 0)", [userid]);
 
-    await pool.query(
-      "INSERT INTO carts (userid, totalprice) VALUES ($1, 0)",
-      [userid]
-    );
-
+    // Respond to the client
     res.status(201).send("User registered successfully and cart created");
   } catch (err) {
-    console.error(err.message);
+    console.error('Registration error:', err.message);
     res.status(500).send("Server error");
   }
 };
+
 
 const getUserById = async (req, res) => {
   const userid  = req.user.userid;
