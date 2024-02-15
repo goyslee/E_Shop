@@ -63,7 +63,15 @@ console.log(`${process.env.REACT_APP_FRONTEND_URL}`,
     `${process.env.REACT_APP_BACKEND_URL}`,
     `${process.env.LOCALHOST}`,
     `${process.env.REACT_APP_FRONTEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`,
-    `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`)
+  `${process.env.REACT_APP_BACKEND_URL}:${process.env.REACT_APP_LOCAL_PORT}`)
+    
+const corsOptions = {
+    origin: process.env.REACT_APP_FRONTEND_URL, // or your frontend domain
+    credentials: true, // critical for sessions to work
+    methods: ["GET", "POST", "PUT", "DELETE"]
+};
+
+app.use(cors(corsOptions));  
 
 app.use(session({
     store: new pgSession({
@@ -76,8 +84,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    secure: true,
-    sameSite: 'None'
+    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+    sameSite: process.env.NODE_ENV === "production" ? 'None' : 'Lax' // 'None' for cross-site in production, 'Lax' for development
   } // 30 days
 }));
 
