@@ -92,8 +92,12 @@ app.use(session({
 
 app.use((req, res, next) => {
   console.log('HEADERS ARE:', req.headers);
+  console.log('Session ID:', req.sessionID);
+  console.log('Session Data:', req.session);
+  console.log('Cookies:', req.cookies);
   next();
 });
+
 
 app.set('trust proxy', true);
 
@@ -104,10 +108,6 @@ app.use(passport.session());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use((req, res, next) => {
-//   next();
-// });
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 authController.initializePassport(passport);
