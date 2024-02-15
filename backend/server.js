@@ -189,5 +189,5 @@ app.post('/update-user-details', (req, res) => {
 // });
 
 app.listen(port, () => {
-  console.log(`Server is running on ${port}`);
+  console.log(`This Server is running on ${port}`);
 });
