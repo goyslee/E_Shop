@@ -43,6 +43,7 @@ app.use(function (req, res, next) {
     'https://e-shop-frontend-8ylf.onrender.com',
     'https://e-shop-backend-plfz.onrender.com',
     'https://merchant-ui-api.stripe.com/elements/wallet-config',
+    'https://merchant-ui-api.stripe.com',
     `${process.env.REACT_APP_FRONTEND_URL}`,
     `${process.env.REACT_APP_BACKEND_URL}`
   ];
