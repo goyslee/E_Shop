@@ -24,7 +24,7 @@ const RegisterPage = () => {
       const url = `${process.env.REACT_APP_BACKEND_URL}/register`;
       const response = await axios.post(url, formData, { withCredentials: true });
       console.log(response.data);
-      navigate('/login');
+      navigate('/products');
     } catch (error) {
   if (error.response) {
     // The request was made and the server responded with a status code
