@@ -13,46 +13,58 @@ const userSchema = Joi.object({
   phonenumber: Joi.string().pattern(new RegExp('^[0-9+\\-\\s]+$')).required()
 });
 
+// This function finds the next available cart ID.
+// WARNING: This approach is not recommended for production use due to performance and concurrency issues.
+async function findNextAvailableCartId() {
+    let nextId = 1; // Start from 1 or the minimum expected cartId
+    while (true) {
+        const result = await pool.query('SELECT cartid FROM carts WHERE cartid = $1', [nextId]);
+        if (result.rows.length === 0) {
+            return nextId; // This ID is available
+        }
+        nextId++; // Try the next ID
+    }
+}
+
 const register = async (req, res) => {
-  console.log('Received registration request:', req.body); // Debugging: log incoming request
+    console.log('Received registration request:', req.body);
+    try {
+        const { error, value } = userSchema.validate(req.body);
+        if (error) {
+            console.error('Validation error:', error.details[0].message);
+            return res.status(400).send(error.details[0].message);
+        }
 
-  try {
-    const { error, value } = userSchema.validate(req.body);
-    if (error) {
-      console.error('Validation error:', error.details[0].message);
-      return res.status(400).send(error.details[0].message);
+        const { name, email, password, address, phonenumber } = value;
+
+        const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).send("User already exists.");
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const newUser = await pool.query(
+            "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            [name, email, hashedPassword, address, phonenumber]
+        );
+
+        console.log('New user registered:', newUser.rows[0]);
+
+        const userid = newUser.rows[0].userid;
+        const nextAvailableCartId = await findNextAvailableCartId(); // Find the next available cart ID
+        const newCart = await pool.query(
+            "INSERT INTO carts (cartid, userid, totalprice) VALUES ($1, $2, 0) RETURNING *",
+            [nextAvailableCartId, userid]
+        );
+
+        console.log('New cart created:', newCart.rows[0]);
+        res.status(201).send("User registered successfully and cart created");
+    } catch (err) {
+        console.error('Registration error:', err);
+        res.status(500).send("Server error");
     }
-
-    const { name, email, password, address, phonenumber } = value;
-
-    // Check if user already exists
-    const existingUser = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
-    if (existingUser.rows.length > 0) {
-      return res.status(400).send("User already exists.");
-    }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Insert new user into the database
-    const newUser = await pool.query(
-      "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [name, email, hashedPassword, address, phonenumber]
-    );
-
-    console.log('New user registered:', newUser.rows[0]); // Debugging: log new user
-
-    // Create a new cart for the user
-    const userid = newUser.rows[0].userid;
-    const newCart = await pool.query("INSERT INTO carts (userid, totalprice) VALUES ($1, 0) RETURNING *", [userid]);
-    console.log('New cart created:', newCart.rows[0]); // Debugging: log new cart
-
-    res.status(201).send("User registered successfully and cart created");
-  } catch (err) {
-    console.error('Registration error:', err); // Enhanced error logging
-    res.status(500).send("Server error");
-  }
 };
 
 
