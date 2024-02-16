@@ -14,17 +14,15 @@ const userSchema = Joi.object({
 });
 
 const register = async (req, res) => {
-  // Log received data for debugging (remove sensitive data logging in production)
-  console.log('Received registration request:', req.body);
-
-  // Validate incoming data using Joi
-  const { error, value } = userSchema.validate(req.body);
-  if (error) {
-    console.error('Validation error:', error.details[0].message);
-    return res.status(400).send(error.details[0].message);
-  }
+  console.log('Received registration request:', req.body); // Debugging: log incoming request
 
   try {
+    const { error, value } = userSchema.validate(req.body);
+    if (error) {
+      console.error('Validation error:', error.details[0].message);
+      return res.status(400).send(error.details[0].message);
+    }
+
     const { name, email, password, address, phonenumber } = value;
 
     // Check if user already exists
@@ -43,16 +41,16 @@ const register = async (req, res) => {
       [name, email, hashedPassword, address, phonenumber]
     );
 
-    console.log('New user registered:', newUser.rows[0]); // Log for debugging
+    console.log('New user registered:', newUser.rows[0]); // Debugging: log new user
 
     // Create a new cart for the user
     const userid = newUser.rows[0].userid;
-    await pool.query("INSERT INTO carts (userid, totalprice) VALUES ($1, 0)", [userid]);
+    const newCart = await pool.query("INSERT INTO carts (userid, totalprice) VALUES ($1, 0) RETURNING *", [userid]);
+    console.log('New cart created:', newCart.rows[0]); // Debugging: log new cart
 
-    // Respond to the client
     res.status(201).send("User registered successfully and cart created");
   } catch (err) {
-    console.error('Registration error:', err.message);
+    console.error('Registration error:', err); // Enhanced error logging
     res.status(500).send("Server error");
   }
 };
