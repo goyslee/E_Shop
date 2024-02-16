@@ -1,17 +1,27 @@
 // controllers\productController.js 
 const pool = require('../config/dbConfig');
 
+// This function finds the next available product ID by finding the maximum existing ID and adding 1.
+async function findNextAvailableProductId() {
+    const result = await pool.query('SELECT MAX(productid) FROM products');
+    const maxId = result.rows[0].max; // This will be null if there are no entries
+    return maxId ? maxId + 1 : 1; // Start from 1 if there are no existing products
+}
+
+
 const addProduct = async (req, res) => {
-  const { name, description, price, stockquantity, category } = req.body;
-  try {
-    const newProduct = await pool.query(
-      'INSERT INTO products (name, description, price, stockquantity, category) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [name, description, price, stockquantity, category]
-    );
-    res.status(201).json(newProduct.rows[0]);
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+    const { name, description, price, stockquantity, category } = req.body;
+    try {
+        const nextAvailableProductId = await findNextAvailableProductId(); // Find the next available product ID
+        const newProduct = await pool.query(
+            'INSERT INTO products (productid, name, description, price, stockquantity, category) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+            [nextAvailableProductId, name, description, price, stockquantity, category]
+        );
+        res.status(201).json(newProduct.rows[0]);
+    } catch (err) {
+        console.error('Add Product error:', err); // Enhanced error logging
+        res.status(500).send(err.message);
+    }
 };
 
 const getAllProducts = async (req, res) => {

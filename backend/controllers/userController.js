@@ -13,18 +13,18 @@ const userSchema = Joi.object({
   phonenumber: Joi.string().pattern(new RegExp('^[0-9+\\-\\s]+$')).required()
 });
 
-// This function finds the next available cart ID.
-// WARNING: This approach is not recommended for production use due to performance and concurrency issues.
+async function findNextAvailableUserId() {
+    const result = await pool.query('SELECT MAX(userid) FROM users');
+    const maxId = result.rows[0].max;
+    return maxId ? maxId + 1 : 1;
+};
+
 async function findNextAvailableCartId() {
-    let nextId = 1; // Start from 1 or the minimum expected cartId
-    while (true) {
-        const result = await pool.query('SELECT cartid FROM carts WHERE cartid = $1', [nextId]);
-        if (result.rows.length === 0) {
-            return nextId; // This ID is available
-        }
-        nextId++; // Try the next ID
-    }
+    const result = await pool.query('SELECT MAX(cartid) FROM carts');
+    const maxId = result.rows[0].max;
+    return maxId ? maxId + 1 : 1;
 }
+
 
 const register = async (req, res) => {
     console.log('Received registration request:', req.body);
@@ -42,21 +42,24 @@ const register = async (req, res) => {
             return res.status(400).send("User already exists.");
         }
 
+        const nextAvailableUserId = await findNextAvailableUserId(); // Find the next available user ID
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Now, we use the next available user ID instead of relying on SERIAL
         const newUser = await pool.query(
-            "INSERT INTO users (name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            [name, email, hashedPassword, address, phonenumber]
+            "INSERT INTO users (userid, name, email, password, address, phonenumber) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+            [nextAvailableUserId, name, email, hashedPassword, address, phonenumber]
         );
 
         console.log('New user registered:', newUser.rows[0]);
 
-        const userid = newUser.rows[0].userid;
+        // Assuming you've also removed SERIAL from cartid and handle it manually like userid
         const nextAvailableCartId = await findNextAvailableCartId(); // Find the next available cart ID
         const newCart = await pool.query(
             "INSERT INTO carts (cartid, userid, totalprice) VALUES ($1, $2, 0) RETURNING *",
-            [nextAvailableCartId, userid]
+            [nextAvailableCartId, nextAvailableUserId] // Notice we use the manually assigned nextAvailableUserId
         );
 
         console.log('New cart created:', newCart.rows[0]);
@@ -66,6 +69,8 @@ const register = async (req, res) => {
         res.status(500).send("Server error");
     }
 };
+
+
 
 
 const getUserById = async (req, res) => {

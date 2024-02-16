@@ -54,21 +54,39 @@ const getOrderById = async (req, res) => {
     }
 };
 
+
+async function findNextAvailableOrderId() {
+    const result = await pool.query('SELECT MAX(orderid) FROM orders');
+    const maxId = result.rows[0].max;
+    return maxId ? maxId + 1 : 1;
+}
+
+
 const createOrder = async (req, res) => {
     const userid = req.user.userid;
     const { totalprice, shippingaddress, orderdetails } = req.body;
     try {
-        const newOrderQuery = await pool.query('INSERT INTO orders (userid, orderdate, totalprice, shippingaddress) VALUES ($1, NOW(), $2, $3) RETURNING *', [userid, totalprice, shippingaddress]);
+        const nextAvailableOrderId = await findNextAvailableOrderId(); // Find the next available order ID
+        const newOrderQuery = await pool.query(
+            'INSERT INTO orders (orderid, userid, orderdate, totalprice, shippingaddress) VALUES ($1, $2, NOW(), $3, $4) RETURNING *',
+            [nextAvailableOrderId, userid, totalprice, shippingaddress]
+        );
         const newOrderId = newOrderQuery.rows[0].orderid;
+
         for (const item of orderdetails) {
             const itemTotalPrice = await getItemTotalPrice(item.productid, item.quantity);
-            await pool.query('INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ($1, $2, $3, $4)', [newOrderId, item.productid, item.quantity, itemTotalPrice]);
+            await pool.query(
+                'INSERT INTO orderdetails (orderid, productid, quantity, price) VALUES ($1, $2, $3, $4)',
+                [newOrderId, item.productid, item.quantity, itemTotalPrice]
+            );
         }
         res.status(201).json(newOrderId);
     } catch (err) {
+        console.error('Create Order error:', err); // Enhanced error logging
         res.status(500).send(err.message);
     }
 };
+
 
 const updateOrderDetails = async (req, res) => {
     const userid = req.user.userid;
